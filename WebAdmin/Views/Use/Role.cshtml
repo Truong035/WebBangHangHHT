@@ -1,0 +1,308 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model RoleView
+@{
+
+}
+@using WebAdmin.Models.ModelView;
+<div class="modal " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="use-form">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thông Tin Chức Vụ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="Name">Tên Chức Vụ</label>
+                        <input required type="text" class="form-control" id="Name" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="Description">Mô Tả</label>
+                        <input required class="form-control" id="Description" placeholder="Mô tả">
+                    </div>
+
+
+
+                    <div class="col-md-12 grid-margin stretch-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-description">Phân quyền sử dụng</p>
+
+                                <div class="row">
+                                    @foreach (var item in Model.Permisstion)
+                                    {
+                                    <div class="col-6 form-check form-check-info">
+                                      
+                                            <label class="form-check-label">
+                                                <input class="form-check-input"   value="@item.id" type="checkbox" value="">
+                                                <span class="form-check-sign">@item.Name</span>
+                                            </label>
+                                    
+                        
+                                    </div>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-lg-12 grid-margin stretch-card" id="frm1">
+    <div class="card">
+        <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="m-3 border-bottom pb-3">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Danh Sách Các Ngành</h4>
+                            <div class="ml-auto">
+                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#exampleModal">
+                                    <i class="ti-plus"></i>
+                                    Thêm Mới
+                                </button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table id="data-table" class="display expandable-table" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    ID
+                                                </th>
+                                                <th>
+                                                    Tên
+                                                </th>
+                                                <th>
+                                                    Mô Tả
+                                                </th>
+
+
+                                                <th>
+                                                    #
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @foreach (var item in Model.Role)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @item.id
+                                                    </td>
+                                                    <td>
+                                                        @item.Name
+                                                    </td>
+                                                    <td>
+                                                        @(item.Description!=null? item.Description : "Chưa cập nhật")
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="form-button-action">
+                                                       
+                                                            <button name="Edit" type="button" data-toggle="tooltip" title="" class="btn  btn-icon-text text-primary  " data-original-title="Edit Task">
+                                                                <i class="fa fa-edit"></i>
+                                                            </button>
+                                                            <button name="Delete" class="btn  btn-icon-text text-danger">
+                                                                <i class="fa fa-times"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="position-fixed end-0 mt-5 pt-2 " style="z-index: 11">
+            <div id="liveToast" class="toast hide bg-success text-white p-2" role="alert" aria-live="assertive" aria-atomic="true">
+
+            </div>
+        </div>
+        <div class="position-fixed end-0 mt-5 pt-2 " style="z-index: 11">
+            <div id="livefail" class="toast hide bg-danger text-white p-2" role="alert" aria-live="assertive" aria-atomic="true">
+                Cập nhật thất bại
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            let id = 0;
+            $('#use-form').on('submit', function (e) {
+                e.preventDefault();
+
+                var data = {
+                    id: id,
+                    Name: $("#Name").val(),
+                    Description: $("#Description").val(),
+                    Role_Permisstion: []
+                }
+
+                var Check = $(".form-check-input")
+                $.each(Check, function (k, v) {
+                    if ($(v).prop("checked") === true) {
+                        data.Role_Permisstion.push({
+                            idPermisstion: $(v).val()
+                        })
+                    }
+
+                });
+                $.ajax({
+                    async: false,
+                    url: "/Use/RoleCreate",
+                    type: "POST",
+                    data: { Role: data }
+                }).done(
+                    function (res) {
+                        if (res.Success) {
+                            $("#exampleModal").modal("hide")
+
+                            $("#liveToast").empty();
+                            $("#liveToast").append(res.Message);
+                            $("#liveToast").toast("show");
+                            setTimeout(myGreeting, 3000);
+
+                        }
+                        else {
+
+                            $("#livefail").empty();
+                            $("#livefail").append(res.Message);
+                            $("#livefail").toast("show");
+                        }
+
+                    }
+                );
+
+
+            });
+            $(document).on('click', "button[name = 'Delete']", function () {
+                let id = $(this).closest('tr').find("td:eq(0)").text().trim();
+                let tr = $(this).closest('tr');
+                swal({
+                    title: 'Bạn có chắn chắn xóa hay không ?',
+                    text: "Nếu bạn xóa hồ sợ của đợt tuyển sinh này sẽ bị xóa đi!",
+                    type: 'warning',
+                    buttons: {
+                        cancel: {
+                            visible: true,
+                            text: 'Hủy bỏ',
+                            className: 'btn btn-danger'
+                        },
+                        confirm: {
+                            text: 'Đồng ý',
+                            className: 'btn btn-success'
+                        }
+                    }
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        console.log(id);
+                        $.ajax({
+                            async: false,
+                            url: "/Use/DeleteRole/" + id,
+                            type: 'GET',
+                        }).done(function (res) {
+                            console.log(res)
+                            if (res.Success) {
+                                $(tr).empty()
+                                swal("Xóa thành công", {
+                                    icon: "success",
+                                    buttons: {
+                                        confirm: {
+                                            className: 'btn btn-success'
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                swal("Thất bại!", res.Message, {
+                                    icon: "error",
+                                    buttons: {
+                                        confirm: {
+                                            className: 'btn btn-success'
+                                        }
+                                    },
+                                });
+                            }
+                        });
+
+                    }
+                });
+
+            });
+            $(document).on('click', "button[name = 'Edit']", function () {
+                console.log($(this).closest('tr').find("td:eq(0)").text().trim())
+                id = $(this).closest('tr').find("td:eq(0)").text().trim();
+                var Check = $(".form-check-input")
+                $.each(Check, function (k, v1) {
+
+                    $(v1).prop("checked", false)
+
+                });
+                $.ajax({
+                    async: false,
+                    url: "/Use/GetRole/" + $(this).closest('tr').find("td:eq(0)").text().trim(),
+                    type: "GET",
+
+                }).done(
+                    function (res) {
+                        if (res.Success) {
+
+                            $("#Name").val(res.Data.Role.Name),
+                                $("#Description").val(res.Data.Role.Description),
+                                $.each(res.Data.Role_Permisstion, function (k, v) {
+                                    var Check = $(".form-check-input")
+                                    $.each(Check, function (k, v1) {
+                                        if ($(v1).val() == v.idPermisstion) {
+                                            $(v1).prop("checked", true)
+                                        }
+                                    });
+                                });
+
+                            $("#exampleModal").modal("show")
+                        }
+                        else {
+
+                        }
+
+                    }
+                );
+
+
+            });
+        })
+        function myGreeting() {
+            window.location = "/Use/Role"
+        }
+    </script>
+}

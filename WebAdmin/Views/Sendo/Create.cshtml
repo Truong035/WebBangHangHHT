@@ -1,0 +1,670 @@
+﻿
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/summernote/summernote.css" rel="stylesheet" />
+<style type="text/css">
+    .note-toolbar panel-heading {
+        color: #808080;
+    }
+
+    button.note-btn i {
+        color: #808080;
+    }
+
+    button.note-btn span {
+        color: #808080;
+    }
+
+    .note-editor.note-frame .note-btn {
+        border: 1px solid #4e0c0c !important;
+        background: #ffffff !important;
+    }
+</style>
+@section scripts{
+   
+    <script src="~/Scripts/summernote/summernote.min.js"></script>
+    <script>
+        let product = [];
+        let data = {
+            "id": 0,
+            "name": "Thuốc Bán Hàng",
+            "sku": "MP123s113",
+            "price": 8000000,
+            "weight": 10000,
+            "stock_availability": true,
+            "description": "<p style=\"color: #333333; font-size: 14px;\">Vùng nguy hiểm trên Biển Đông trong 24 giờ tới (gió mạnh từ cấp 6 trở lên, giật từ cấp 8 trở lên): từ vĩ tuyến 10 đến 18,0 độ Vĩ Bắc; phía Tây kinh tuyến 114,5 độ Kinh Đông. Toàn bộ tàu thuyền, khu nuôi trồng thủy sản, đê, kè biển trong vùng nguy hiểm đều có nguy cơ cao chịu tác động của gió mạnh, sóng lớn và lốc xoáy.</p>\n<p style=\"color: #333333; font-size: 14px;\">Trong 24 đến 48 giờ tiếp theo, bão đổi hướng di chuyển theo hướng Bắc Đông Bắc, mỗi giờ đi được 15-20km. Đến 04 giờ ngày 21/12, vị trí tâm bão ở khoảng 19,5 độ Vĩ Bắc; 113,0 độ Kinh Đông, cách Hồng Kông (Trung Quốc) khoảng 340km về phía Nam Tây Nam. Sức gió mạnh nhất vùng gần tâm bão mạnh cấp 9-10 (75-100km/giờ), giật cấp 12.</p>\n<p style=\"color: #333333; font-size: 14px;\">Vùng nguy hiểm trên biển, ven biển trong 24 đến 48 giờ tiếp theo (gió mạnh từ cấp 6 trở lên, giật từ cấp 8 trở lên): phía Bắc vĩ tuyến 13,0 độ Vĩ Bắc; từ kinh tuyến 108.0 đến 115,5 độ Kinh Đông. Toàn bộ tàu thuyền hoạt động trong vùng nguy hiểm đều có nguy cơ cao chịu tác động của gió mạnh, sóng lớn và lốc xoáy.</p>\n<p style=\"color: #333333; font-size: 14px;\">Trong 48 đến 72 giờ tiếp theo, bão đổi hướng di chuyển theo hướng Đông Đông Bắc, mỗi giờ đi 10-15km và suy yếu thành áp thấp nhiệt đới. Đến 04 giờ ngày 22/12, vị trí tâm áp thấp nhiệt đới ở khoảng 20,6 độ Vĩ Bắc; 115,5 độ Kinh Đông, cách Hồng Kông (Trung Quốc) khoảng 250km về phía Nam Đông Nam. Sức gió mạnh nhất vùng gần tâm áp thấp nhiệt đới mạnh cấp 6 (40-50km/giờ), giật cấp 8.</p>\n<p style=\"color: #333333; font-size: 14px;\">Trong 72 đến 96 giờ tiếp theo, áp thấp nhiệt đới di chuyển chủ yếu theo hướng Đông, mỗi giờ đi được 10-15km, suy yếu thành một vùng áp thấp.</p>",
+            "cat_4_id": 3653,
+            "tags": " hahahaha hashhashhas ",
+            "relateds": [
+                {
+                    "id": 66188747,
+                    "name": "string 2333 123 213",
+                    "sku": "HAHAHHA",
+                    "category_name": "Áo khoác kiểu nữ",
+                    "price": 777777,
+                    "status": 2,
+                    "image": "https://media3.scdn.vn/img4/2021/11_13/8lOKBtcTQHxWDr9jnsYk.png"
+                }
+            ],
+            "seo_keyword": "okt123",
+            "seo_title": "san pham 123",
+            "seo_description": null,
+            "seo_description": "string",
+            "product_image": "https://media3.scdn.vn/img4/2021/11_13/8lOKBtcTQHxWDr9jnsYk.png",
+            "brand_id": 0,
+            "video_links": "string",
+            "height": 355,
+            "length": 12,
+            "width": 12,
+            "unit_id": 2,
+            "stock_quantity": 12,
+            "avatar": {
+                "picture_url": "https://media3.scdn.vn/img4/2021/11_13/8lOKBtcTQHxWDr9jnsYk.png"
+            },
+            "pictures": [
+                {
+                    "picture_url": "https://media3.scdn.vn/img4/2021/11_13/8lOKBtcTQHxWDr9jnsYk.png"
+                }
+            ],
+            "certificate_file": [
+
+            ],
+            "attributes": [
+                {
+                    "attribute_id": 1157,
+                    "attribute_name": "Xuất xứ",
+                    "attribute_code": "xuat_su",
+                    "attribute_is_custom": false,
+                    "attribute_is_checkout": false
+                }
+            ],
+            "promotion_from_date": "2021-12-19T08:09:16.637Z",
+            "promotion_to_date": "2021-12-19T08:09:16.637Z",
+            "is_promotion": true,
+            "extended_shipping_package": {
+                "is_using_instant": false,
+                "is_using_in_day": false,
+                "is_self_shipping": false,
+                "is_using_standard": true,
+                "is_using_eco": false
+            },
+            "variant": {
+                "variant_attributes": [
+                    {
+                        "attribute_id": 0,
+                        "attribute_code": "string",
+                        "option_id": 0
+                    }
+                ],
+                "variant_sku": "string",
+                "variant_price": 0,
+                "variant_promotion_start_date": "2021-12-19T08:09:16.637Z",
+                "variant_promotion_end_date": "2021-12-19T08:09:16.637Z",
+                "variant_special_price": 0,
+                "variant_quantity": 0
+            },
+            "is_config_variant": false,
+            "special_price": 12000,
+            "voucher": {
+                "product_type": 1,
+                "start_date": "2021-12-19T08:09:16.637Z",
+                "end_date": "2021-12-19T08:09:16.637Z",
+                "is_check_date": true
+            }
+        }
+        var token = ""
+        $(document).ready(function () {
+            load();
+            @*$('#desProduct').summernote();*@
+
+            Login();
+            console.log(token)
+             GetCategory(0,  $('#level1'));
+             GETALL();
+            function load() {
+                var myElement = $(".chitiet");
+                myElement.summernote({
+                    placeholder: 'Enter content....',
+                    tabsize: 2,
+                    height: 200,
+                    minHeight: 100,
+                    maxHeight: 300,
+                    focus: true,
+                    callbacks: {
+                        onImageUpload: function (files) {
+                            for (var i = 0; i < files.length; i++) {
+                                uploadImage(files[i]);
+                            }
+                        }
+                    },
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['height', ['height']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['fullscreen', 'codeview', 'help']],
+                    ],
+                    disableResizeEditor: true,
+                    height: 300,
+                    minHeight: null, // set minimum height of editor
+                    maxHeight: null,
+                    codemirror: {
+                        theme: 'monokai'
+                    }
+                    // set editor height
+                    // set maximum height of editor
+                    // set focus to editable area after initializing summernote
+                });
+            }
+
+            $('#Upload').click(function () {
+
+            });
+            $("#form").submit(function (e) {
+                e.preventDefault();
+                data.name = $("#nameProduct").val();
+                data.description = $("#desProduct").val();
+                data.cat_4_id = parseInt($("#level3").val());;
+                data.sku = $("#MaSp").val();
+                data.price = parseInt($("#price").val());
+                data.stock_availability = $("#stock_availability").prop("checked");
+                data.weight = parseInt($("#weight").val());
+                data.tags = "Sản phẩm bán thuốc";
+                data.seo_keyword = $("#seo_keyword").val();
+                data.seo_title = $("#seo_title").val();
+                data.seo_description = $("#seo_description").val();
+                data.height = $("#height").val();
+                //     data.unit_id = $("#unit_id").val();
+                data.length = parseInt($("#length").val());
+                data.stock_quantity = parseInt($("#stock_quantity").val())
+                data.width = parseInt($("#width").val());
+                data.special_price = parseInt($("#special_price").val());
+                data.promotion_from_date = $("#promotion_from_date").val();
+                data.promotion_to_date = $("#promotion_to_date").val();
+                console.log(data);
+                console.log(JSON.stringify(data))
+                console.log(token)
+                $.ajax({
+                    async: false,
+                    type: 'POST',
+                    url: '/Sendo/productCreate',
+                    data: { product: data, token: token },
+                    dataType: 'json',
+
+                }).done(function (res) {
+                    console.log(res)
+                    if (res.routes_list.status_code == 200) {
+                        console.log(res);
+                        window.location = "/Sendo/Index";
+                    }
+                    else {
+                        swal("Lỗi!", res.routes_list.error.message, {
+                            icon: "warning",
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-warning'
+                                }
+                            },
+                        });
+                       // alert(res.routes_list.error.message);
+                    }
+                    //   loadData(res.result.data);
+                });
+            });
+            $('#btnCreate').click(function (e) {
+              
+            });
+
+            $("#addRowButton").click(function () {
+                let img = $("#listProduct");
+                var check = $(".checkproduct")
+                $.each(check, function (k, v) {
+                    if ($(v).prop("checked")) {
+                        LoadProduct(v.id, img);
+                    }
+
+                });
+                $("#addRowModal").modal("hide")
+            })
+
+        });
+        function readURL(input) {
+            var fileUpload = $("#files").get(0);
+            var files = fileUpload.files;
+            var img = $('#file-upload-content');
+            // Create  a FormData object
+            var fileData = new FormData();
+
+            // if there are multiple files , loop through each files
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+
+            // Adding more keys/values here if need
+            fileData.append('Test', "Test Object values");
+
+            $.ajax({
+                url: '/File/UploadFiles', //URL to upload files
+                type: "POST", //as we will be posting files and other method POST is used
+                processData: false, //remember to set processData and ContentType to false, otherwise you may get an error
+                contentType: false,
+                data: fileData,
+                success: function (result) {
+                    console.log(result)
+                    $(img).empty();
+                    data.pictures = [];
+                    $.each(result.Img, function (k, v) {
+                        var let = ` <div class="col-2">
+                    <img src="${v}" class="img-thumbnail" alt="...">
+                </div>`;
+                        data.pictures.push({ picture_url:host+v})
+                        $(img).append(let);
+                    });
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });
+        }
+
+        function LoadProduct(idproduct,img) {
+
+            $.each(product, function (k, v) {
+
+                if (v.id == idproduct) {
+                    var let = ` <div class="col-2">
+                    <img src="${v.image}" class="img-thumbnail" alt="...">
+                </div>`;
+                    $(img).append(let);
+                    data.relateds.push({
+                        "id": v.id,
+                        "name": v.name,
+                        "sku": v.sku,
+                        "category_name": v.category_4_name,
+                        "price": v.final_price_min,
+                        "status": v.status,
+                        "image": v.image
+                    });
+                }
+
+            });
+        }
+        const GETALL = async () => {
+            var curDate = new Date();
+
+            var curDay = curDate.getDate();
+            var curMonth = curDate.getMonth() + 1;
+            var curYear = curDate.getFullYear();
+            var data1 = {
+                "page_size": 10,
+                "product_name": "",
+                "date_from": "2020-05-01",
+                "date_to": curYear + "-" + curMonth + "-" + curDay,
+                "status": null,
+                //   token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJTdG9yZUlkIjoiOTM4NTQ0IiwiVXNlck5hbWUiOiIiLCJTdG9yZVN0YXR1cyI6IjIiLCJTaG9wVHlwZSI6IjEiLCJTdG9yZUxldmVsIjoiMCIsImV4cCI6MTYzOTg3MTExMSwiaXNzIjoiOTM4NTQ0IiwiYXVkIjoiOTM4NTQ0In0.sgaRIMciv-bjIm8C52C1gzB3mOTMhLTsq4wKfqewVqQ"
+            }
+            $.ajax({
+                async: false,
+                type: 'POST',
+                url: '/Sendo/Search',
+                data: { data: data1, token: token },
+                dataType: 'json',
+
+            }).done(function (res) {
+                console.log(res)
+                console.log(res.routes_list.result.data)
+                loadData(res.routes_list.result.data);
+            });
+        }
+        function loadData(arr) {
+            product = arr;
+            $.each(arr, function (k, v) {
+
+                $('#add-row').dataTable().fnAddData([
+                    `<td><input class="checkproduct" id="${v.id}" type="checkbox"/></td>`,
+                    `<img src="${v.image}" width="70" height="100" class="img-thumbnail" alt="...">`,
+                    ` <label class="w-100">${v.category_4_name}</label>
+                                <label class="fw-bold w-100"> ${v.name}</label>
+
+    `,
+
+                    v.stock_quantity + " Sản phẩm"
+
+
+
+                ]);
+            });
+        }
+
+        function numberWithCommas(x) {
+            x = x.toString();
+            var pattern = /(-?\d+)(\d{3})/;
+            while (pattern.test(x))
+                x = x.replace(pattern, "$1,$2");
+            return x;
+        }
+
+        const GetCategory = async (id ,combo) => {
+            $.ajax({
+             
+                url: '/Sendo/category',
+                type: 'GET',
+                data: { token: token,id:id }
+            }).done(function (res) {
+                console.log(res)
+               // var data = JSON.parse(res);
+                //   var combo = $('#level1');
+                combo.empty();
+                combo.append(" <option >Vui lòng chọn</option>")
+                $.each(res.routes_list.result, function (k, v) {
+                    combo.append(`<option value="${v.id}">${v.name}</option>`)
+                });
+
+                @*if (id === 0) {
+
+                    $('#level1').
+                }*@
+
+
+            });
+        }
+        const Login = async () => {
+            $.ajax({
+                async: false,
+                url: '/Sendo/Login',
+                type: 'GET',
+                dataType: 'json',
+            }).done(function (res) {
+
+                console.log(res.routes_list.result.token)
+                //var data = JSON.parse(res);
+                console.log(token);
+                token = res.routes_list.result.token,
+                    console.log(token)
+
+            });
+        }
+        function OnchangeLevel1(value) {
+            console.log($(value).val())
+            GetCategory($(value).val(),$("#level2"))
+        }
+        function OnchangeLevel2(value) {
+            console.log($(value).val())
+            GetCategory($(value).val(), $("#level3"))
+        }
+    </script>
+}
+
+<div class="modal fade  " id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header no-bd">
+                <h5 class="modal-title">
+                    <span class="fw-mediumbold">
+                        Thông Tin Danh Mục
+                    </span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="add-row" class="display table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th># </th>
+                                <th style="width: 10%">Hình Ảnh</th>
+                                <th>Thông Tin Sản Phẩm</th>
+
+
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer no-bd">
+                <button id="addRowButton" class="btn btn-primary">Lưu</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<form id="form">
+    <div class="col-md-12 mt-3">
+
+        <div class="card">
+            <div class="card-header">
+                <div class="d-flex align-items-center">
+                    <h4 class="card-title">Thêm Mới Sản Phẩm</h4>
+                </div>
+            </div>
+
+<div class="row form-group">
+    <div class="col-2">
+        Tên Sản Phẩm
+    </div>
+    <div class="col-8">
+        <input id="nameProduct" required class="form-control" />
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-2">
+        Ngành Hàng
+    </div>
+    <div class="col-8 row">
+        <div class="col">
+            <select id="level1" required onchange="OnchangeLevel1(this)" class="form-control">
+            </select>
+        </div>
+        <div class="col">
+            <select class="form-control" required id="level2" onchange="OnchangeLevel2(this)">
+            </select>
+        </div>
+        <div class="col">
+            <select id="level3"  required class="form-control">
+            </select>
+        </div>
+
+    </div>
+</div>
+<div class="row  form-group">
+    <div class="col-2">
+        Ảnh sản phẩm
+    </div>
+    <div class="col-8 row ">
+        <div class="col">
+            <button class="btn btn-sm btn-option" type="button" onclick="$('.addImg').trigger( 'click' )" )>Chọn   Ảnh </button>
+            <input class="addImg" multiple id="files" hidden type='file' onchange="readURL(this);" accept="image/*" />
+        </div>
+    </div>
+</div>
+<div class=" row form-group">
+    <div class="col-2">
+
+    </div>
+    <div class="row file-upload-content col-8" id="file-upload-content">
+
+    </div>
+</div>
+<div class="row  form-group">
+    <div class="col-2">
+        Mô Tả Sản Phẩm
+    </div>
+    <div class="col-8">
+        <textarea required id="desProduct" class="chitiet form-control"></textarea>
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-2">
+        Mã Sản Phẩm
+    </div>
+    <div class="col-8">
+        <input required id="MaSp" class="form-control" />
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-2">
+        Giá Gốc Sản Phẩm
+    </div>
+    <div class="col-8">
+        <input required id="price" class="form-control" />
+    </div>
+</div>
+
+<div class="row form-group">
+    <div class="col-2">
+        Gía Khuyến Mãi
+    </div>
+    <div class="col-8 row">
+        <div class="col">
+            <input required id="special_price" class="form-control" />
+        </div>
+        <div class="col">
+            <input required id="promotion_from_date" type="datetime-local" class="form-control" />
+        </div>
+
+
+        <div class="col">
+            <input required id="promotion_to_date" type="datetime-local" class="form-control" />
+        </div>
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-2">
+        Tình Trạng Hàng
+    </div>
+    <div class="col-8">
+        <div class="form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" id="stock_availability" type="checkbox" checked value="">
+                <span class="form-check-sign"></span>
+            </label>
+        </div>
+    </div>
+
+</div>
+<div class="row form-group">
+    <div class="col-2">
+        Số Lượng Tồn Kho
+    </div>
+    <div class="col-8">
+        <input required type="number" id="stock_quantity" class="form-control" />
+    </div>
+</div>
+
+<div class="row form-group">
+    <div class="col-2">
+
+        Đơn vị
+    </div>
+    <div class="col-8 row">
+        <input required id="unit_id" class="form-control" />
+
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-2">
+        Kích thước gói
+    </div>
+    <div class="col-8 row">
+        <div class="col">
+            <input required id="height" placeholder="Chiều cao" type="number" class="form-control" />
+        </div>
+        <div class="col">
+            <input required id="length" placeholder="Chiều dài" type="number" class="form-control" />
+        </div>
+        <div class="col">
+            <input requireds id="width" placeholder="Chiều rộng" type="number" class="form-control" />
+        </div>
+        <div class="col">
+            <input required id="weight" placeholder="Khối lượng" type="number" class="form-control" />
+        </div>
+
+    </div>
+</div>
+</div>
+<div class="card">
+    <div class="card-header">
+        <div class="d-flex align-items-center">
+            <h4 class="card-title">Tối ưu tìm kiếm</h4>
+
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-2">
+            Seo Tiêu Đề
+        </div>
+        <div class="col-8">
+            <input  id="seo_title" class="form-control" />
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-2">
+            Từ khóa Seo
+        </div>
+        <div class="col-8">
+            <input  id="seo_keyword" class="form-control" />
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-2">
+            Mô tả Seo
+        </div>
+        <div class="col-8 row">
+            <input  id="seo_description" class="form-control" />
+
+        </div>
+    </div>
+    <div class="row  form-group">
+        <div class="col-2">
+            Đường dẫn
+        </div>
+        <div class="col-8 row ">
+            <input  class="form-control" />
+        </div>
+    </div>
+    <div class=" row form-group">
+        <div class="col-2">
+            Từ Khóa
+        </div>
+        <div class="row file-upload-content col-8" id="file-upload-content">
+            <input  class="form-control" />
+        </div>
+    </div>
+    <div class="row  form-group">
+        <div class="col-2">
+            Sản phẩm liên quan
+        </div>
+        <div class="col-8">
+            <button type="button" class="btn btn-sm btn-option" data-toggle="modal" data-target="#addRowModal">Chọn</button>
+        </div>
+    </div>
+    <div class="row  form-group">
+        <div class="col-2">
+        </div>
+        <div class="col-8 row" id="listProduct">
+
+        </div>
+    </div>
+    <div class="ml-4 mb-4">
+        <button id="btnCreate" type="submit" class="btn btn-primary"> Tạo</button>
+    </div>
+
+
+</div>
+</div>
+    </form>

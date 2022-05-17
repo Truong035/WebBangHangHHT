@@ -1,0 +1,225 @@
+﻿@model WebAdmin.Models.Product
+@{
+    ViewBag.Title = "Create";
+}
+<link href="~/Content/summernote/summernote.css" rel="stylesheet" />
+<style type="text/css">
+    .note-toolbar panel-heading {
+        color: #808080;
+    }
+
+    button.note-btn i {
+        color: #808080;
+    }
+
+    button.note-btn span {
+        color: #808080;
+    }
+
+    .note-editor.note-frame .note-btn {
+        border: 1px solid #4e0c0c !important;
+        background: #ffffff !important;
+    }
+</style>
+@section scripts{
+    <script src="~/Scripts/summernote/summernote.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+           
+            $(document).ready(function () {
+                load();
+                $(".note-icon-trash").trigger("click");
+                $("#option").change(function () {
+                    var number = Number.parseInt($("#option").val());
+                    $("#frmOption").empty();
+                    for (var i = 0; i < number; i++) {
+                        $("#frmOption").append(`<input required class="form-control form-control-sm col-1" name="option${i}"/>`);
+                    }
+                   
+                })
+            });
+            function load() {
+                var myElement = $(".chitiet");
+                myElement.summernote({
+                    placeholder: 'Enter content....',
+                    tabsize: 2,
+                    height: 200,
+                    minHeight: 100,
+                    maxHeight: 300,
+                    focus: true,
+                    callbacks: {
+                        onImageUpload: function (files) {
+                            for (var i = 0; i < files.length; i++) {
+                                uploadImage(files[i]);
+                            }
+                        }
+                    },
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['height', ['height']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'video']],
+                        ['view', ['fullscreen', 'codeview', 'help']],
+                    ],
+                    disableResizeEditor: true,
+                    height: 300,
+                    minHeight: null, // set minimum height of editor
+                    maxHeight: null,
+                    codemirror: {
+                        theme: 'monokai'
+                    }
+                    // set editor height
+                    // set maximum height of editor
+                    // set focus to editable area after initializing summernote
+                });
+            }
+
+            $('#Upload').click(function () {
+
+
+
+            });
+
+        });
+        function readURL(input) {
+            var fileUpload = $("#files").get(0);
+            var files = fileUpload.files;
+            var img = $('#file-upload-content');
+            // Create  a FormData object
+            var fileData = new FormData();
+
+            // if there are multiple files , loop through each files
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+
+            // Adding more keys/values here if need
+            fileData.append('Test', "Test Object values");
+
+            $.ajax({
+                url: '/File/UploadFiles', //URL to upload files
+                type: "POST", //as we will be posting files and other method POST is used
+                processData: false, //remember to set processData and ContentType to false, otherwise you may get an error
+                contentType: false,
+                data: fileData,
+                success: function (result) {
+                    console.log(result)
+                    $(img).empty();
+                    $.each(result.Img, function (k, v) {
+                        var let = ` <div class="col-2">
+                        <img src="${v}" class="img-thumbnail" alt="...">
+                    </div>`;
+                        $(img).append(let);
+                    });
+                },
+                error: function (err) {
+                    alert(err.statusText);
+                }
+            });
+        }
+    </script>
+}
+
+<div class="col-md-12">
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+    <div class="card">
+        <h2 class="p-3 mt-3">Thông Tin Sản Phẩm</h2>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <div class="col-md-10  ">
+                <label> Tên Sản Phẩm</label>
+                @Html.EditorFor(model => model.name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group d-flex">
+
+            <div class="col-md-6">
+                <label> Danh Mục</label>
+
+                @Html.DropDownListFor(model => model.category_id, ViewBag.Category as SelectList, "--Chọn Danh Mục--", new { @class = "form-control" })
+
+                @Html.ValidationMessageFor(model => model.category_id, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+        <div class="form-group d-flex">
+
+            <div class="col">
+                <label> Giá Tiền</label>
+                @Html.EditorFor(model => model.price, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.price, "", new { @class = "text-danger" })
+            </div>
+            <div class="col">
+                <label> Số Lượng</label>
+                @Html.EditorFor(model => model.stock, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.stock, "", new { @class = "text-danger" })
+            </div>
+            <div class="col">
+                <label> Giảm Giá</label>
+                @Html.EditorFor(model => model.discount, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.discount, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-2 d-flex">
+                <label class="pr-3"> Lựa chọn </label>
+                <input required class="form-control-sm form-control" name="numberoption" id="option" type="number" />
+            </div>
+
+        </div>
+        <div class=" form-group ml-5">
+            <div class=" col-md-12 row d-flex" id="frmOption">
+                
+            
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <label> Mô Tả</label>
+                @Html.TextAreaFor(model => model.description, new { @class = "chitiet", htmlAttributes = new { @class = "form-control chitiet" } })
+                @Html.ValidationMessageFor(model => model.description, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+        <div class=" form-group ml-2">
+            <div class="mr-3">
+                <button class="btn btn-sm btn-option" type="button" onclick="$('.addImg').trigger( 'click' )" )>Chọn ảnh </button>
+
+            </div>
+
+            <input class="addImg" multiple id="files" hidden type='file' onchange="readURL(this);" accept="image/*" />
+
+        </div>
+        <div class=" form-group ml-2">
+            <div class=" card-body row file-upload-content" id="file-upload-content" name=btnanh style="margin-top:-2%">
+
+
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+    }
+
+    <div>
+        @Html.ActionLink("Back to List", "Index")
+    </div>
+</div>
+

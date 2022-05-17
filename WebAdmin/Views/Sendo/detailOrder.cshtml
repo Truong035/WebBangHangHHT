@@ -1,0 +1,290 @@
+﻿
+@{
+    ViewBag.Title = "detailOrder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section scripts{
+    <script>
+        let token = "";
+        var order = "";
+        let id = window.location.href.split('/').pop();
+        $(document).ready(function () {
+            Login();
+
+            $.ajax({
+                async: false,
+                url: '/Sendo/Detail',
+                type: 'GET',
+                dataType: 'json',
+                data: { id: id, token: token },
+            }).done(function (res) {
+                order = res.routes_list.result; console.log(order)
+                $("#order_number").html(order.sales_order.order_number)
+                $("#order_date_time_stamp").html(date(order.sales_order.order_date_time_stamp))
+                $("#payment_method").html((order.sales_order.payment_method === 1 ? "Thanh toán khi nhận hàng" : order.sales_order.payment_method === 2 ? "Thanh toán trực tuyến" : order.sales_order.payment_method === 4 ? "Thanh toán kết hợp" : order.sales_order.payment_method === 5 ? "Thanh toán trả sau" : ""),)
+                $("#store_picking_address").html(order.sales_order.store_picking_address)
+                $("#carrier_phone").html(order.sales_order.carrier_phone)
+                $("#carrier_name").html(order.sales_order.carrier_name)
+                $("#tracking_number").html(order.sales_order.tracking_number)
+
+                $("#receiver_name").html(order.sales_order.receiver_name)
+
+                var v = order
+                $("#order_status").html((v.sales_order.order_status === 2 ? "Mới" : v.sales_order.order_status === 3 ? "Đang xử lý" : v.sales_order.order_status === 6 ? "Đang vận chuyển" : v.sales_order.order_status === 7 ? "Đã giao hàng" : v.sales_order.order_status === 8 ? "Đã hoàn tất" : v.sales_order.order_status === 10 ? "Đóng" : v.sales_order.order_status === 11 ? "Yêu cầu hoãn" : v.sales_order.order_status === 12 ? "Đang hoãn" : v.sales_order.order_status === 13 ? "Hủy" : v.sales_order.order_status === 14 ? "Yêu cầu tách"
+                    : v.sales_order.order_status === 15 ? "Chờ tách" : v.sales_order.order_status === 19 ? "Yêu gộp" : v.sales_order.order_status === 21 ? "Đang đổi trả" : v.sales_order.order_status === 22 ? "Đổi trả thành công"
+                        : "Chờ sendo xử lý"
+                ))
+
+                $("#region_name").html(order.sales_order.region_name)
+                $("#shipping_contact_phone").html(order.sales_order.shipping_contact_phone)
+                $(".sub_total").html(numberWithCommas(order.sales_order.sub_total) + "đ")
+                $("#shipping_fee").html(numberWithCommas(order.sales_order.shipping_fee) + "đ")
+                $("#total_amount_buyer").html(numberWithCommas(order.sales_order.total_amount_buyer) + "đ")
+                $("#senpay_fee").html("-" + numberWithCommas(order.sales_order.senpay_fee) + "đ")
+                $("#total_amount").html(numberWithCommas(order.sales_order.total_amount) + "đ")
+
+                if (v.sales_order.order_status === 2) $("#submitstatust").append(`<button id="btnstatus" class="btn mt-2 btn-danger"> Xác nhận còn hàng</button>`);
+                loadData(order.sku_details)
+
+                $().html((order.sales_order.payment_status === 1 ? "Chưa thanh toán" : order.sales_order.payment_status === 2 ? "Đã thanh toán COD" : order.sales_order.payment_status === 3 ? "Đã thanh toán" : order.sales_order.payment_status === 4 ? "Hoàn tất" : order.sales_order.payment_status === 5 ? "Đã hoàn tiền" : order.sales_order.payment_status === 6 ? "Đợi xác nhận" : order.sales_order.payment_status === 7 ? "Từ chối" : order.sales_order.payment_status === 14 ? "Đã thanh toán một phần"
+                    : "Đã hoàn tiền một phần"))
+
+            });
+            $("#btnstatus").click(function () {
+                $.ajax({
+                    async: false,
+                    url: '/Sendo/updateStatus',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { id: $("#order_number").text(), token: token, status: 3 },
+                }).done(function (res) {
+                    window.location = "/detailOrder/" + $("#order_number").text()
+                })
+            })
+
+
+        });
+
+        function loadData(arr) {
+
+            $.each(arr, function (k, v) {
+                console.log(v)
+                $('#add-row').dataTable().fnAddData([
+
+                    `<img src="${v.product_image}" width="70" height="100" class="img-thumbnail" alt="...">`,
+                    `
+                                    <label class="fw-bold w-100"> ${v.product_name}</label>
+         <label class="w-100"> Trọng lượng : ${v.weight}g</label>
+           <label class=" w-100"> Mã sản phẩm :  ${v.sku} Sao</label>
+        `,
+                    ` <label class="w-100 ">   ${numberWithCommas(v.price)}</label>`,
+                    v.quantity
+                    ,
+                    `<label class="fw-bold"> ${numberWithCommas(v.sub_total)}</label>`,
+
+                    `  <div class="form-button-action">
+                                         <div class="form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" id="stock_availability" type="checkbox" checked value="">
+                    <span class="form-check-sign"></span>
+                </label>
+            </div>
+                                    </div>`
+
+                ]);
+            });
+        }
+        const date = (unixTime) => {
+            const date = new Date(unixTime * 1000);
+            return date.toLocaleString("en-US");
+        }
+        function numberWithCommas(x) {
+            x = x.toString();
+            console.log(x);
+            var pattern = /(-?\d+)(\d{3})/;
+            while (pattern.test(x))
+                x = x.replace(pattern, "$1,$2");
+            return x;
+        }
+
+        const Login = async () => {
+            $.ajax({
+                async: false,
+                url: '/Sendo/Login',
+                type: 'GET',
+                dataType: 'json',
+            }).done(function (res) {
+
+
+                token = res.routes_list.result.token
+
+            });
+        }
+    </script>
+}
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title">Thông Tin Đơn Hàng</h4>
+
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card-header">
+                <h4> Mã đơn hàng: <label class="w-75 text-body text-danger" id="order_number"> 123122112</label>  </h4>
+                <div class="row">
+                    <div class="col">
+                        <label class="w-75 text-body ">  Ngày Đặt Hàng <span class="ml-3" id="order_date_time_stamp">12/04/2021 </span> </label>        <label class="w-75 text-body ">
+                            Thanh Toán :
+                            <span class="ml-3" id="payment_method"> </span>
+                        </label>
+                        <label class="w-75 text-body ">
+                            Mã vận đơn  :
+                            <span class="ml-3" id="tracking_number"> </span>
+                        </label>
+                        <label class="w-75 text-body ">
+                            Trạng Thái  :
+                            <span class="ml-3" id="order_status"> </span>
+                        </label>
+                        <div class="" id="submitstatust"> </div>
+                    </div>
+                    <div class="col">
+                        <label class="w-75 text-body "> Nhà vận chuyển: <span class="ml-3" id="carrier_name">Chuyển phát tiêu chuẩn </span> </label>
+                        <label class="w-75 text-body ">
+                            Hotline NVC: <span class="ml-3" id="carrier_phone">
+                                1900 6771
+                            </span>
+                        </label>
+                    </div>
+                    <div class="col ">
+                        <label class="w-75 text-body "> Đỉa chỉ lấy hàng  <span class="ml-3" id="store_picking_address">11e liên khu 25 quận 9, Phường Nguyễn Thái Bình, Quận 1, Hồ Chí Minh </span></label>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="card-header">
+                <h4> Thông Tin Ngưởi Mua:>  </h4>
+                <div class="d-flex justify-content-between">
+                    <div class="">
+                        <label class="w-75 text-body ">  Người nhận :  <label class="ml-3 w-75 text-body text-danger" id="receiver_name"> Phạm Trọng Trường</label></label>        <label class="w-75 text-body ">
+                            Địa chỉ :
+                            <span class="ml-3" id="region_name">
+                                Tdp14 chư sê gia lai , Thị trấn Chư Sê, Huyện Chư Sê, Gia Lai
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="w-25">
+                        <label class="w-75 text-body "> Điện Thoại  <span class="ml-3" id="shipping_contact_phone">0353573467 </span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive card-header">
+                <table id="add-row" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+
+                            <th style="width: 10%">Hình Ảnh</th>
+                            <th>Thông Tin Sản Phẩm</th>
+                            <th>Đơn giá</th>
+
+                            <th>Số Lượng</th>
+
+                            <th>Thành Tiền</th>
+                            <th style="width: 10%">Còn hàng</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card-header">
+
+                <div class="row d-flex justify-content-between">
+                    <div class="col-5 ">
+                        <h4>Thanh Toán của người mua :   </h4>
+                        <div class=" d-flex justify-content-between">
+                            <label class=""> Giá sản phẩm     </label>
+
+
+                            <label class="sub_total" id="sub_total">
+                                22.000đ
+                            </label>
+
+                        </div>
+
+                        <div class=" d-flex justify-content-between">
+                            <label class="">Phí vận chuyển(PVC) </label>
+
+
+                            <label class="" id="shipping_fee">
+                                22.000đ
+                            </label>
+
+                        </div>
+                        <div class=" d-flex justify-content-between">
+                            <label class="">Tổng Thanh Toán </label>
+
+
+                            <label class="" id="total_amount_buyer">
+                                22.000đ
+                            </label>
+
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <h4>Thanh Toán cho shop :  </h4>
+                        <div class=" d-flex justify-content-between">
+                            <label class="" id=""> Tổng tiền </label>
+
+
+                            <label class="sub_total" id="">
+
+                            </label>
+
+                        </div>
+
+                        <div class=" d-flex justify-content-between">
+                            <label class=""> Phí thanh toán </label>
+
+
+                            <label class="" id="senpay_fee">
+                                22.000đ
+                            </label>
+
+                        </div>
+                        <div class=" d-flex justify-content-between">
+                            <label class=""> Tổng thanh toán cho shop </label>
+
+
+                            <label class="" id="total_amount">
+                                22.000đ
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            <div class="mt-3">
+                <h5> Ghi chú người bán  </h5>
+                <div class="d-flex justify-content-between">
+                    <input class="form-control-sm form-control col-11" />
+                    <div>
+                        <button class="btn btn-danger"> Lưu</button>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+</div>

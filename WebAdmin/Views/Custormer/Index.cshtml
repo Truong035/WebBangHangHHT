@@ -1,0 +1,163 @@
+﻿@model IEnumerable<WebAdmin.Models.Custormer>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title">Danh Sách Nhân Viên</h4>
+                <button id="btnAdd" class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
+                    <i class="fa fa-plus"></i>
+                    Thêm Mới
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Modal -->
+
+
+            <div class="table-responsive">
+                <table id="add-row" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Họ Tên</th>
+                            <th>Ngày Sinh</th>
+                            <th>Email</th>
+                            <th>Số Điện Thoại</th>
+                            <th>Đỉa Chỉ</th>
+                            <th style="width: 10%">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+
+                            <td>@item.name</td>
+                            <td>@(item.birthday!=null?item.birthday.Value.ToShortDateString():"")</td>
+                            <td>@item.email</td>
+                            <td>@item.telephone</td>
+                            <td>@item.adress</td>
+
+                            <td>
+                                <div class="form-button-action">
+                                    <button type="button" id="@item.uid" name="Edit" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                    <a href="/Custormer/Delete/@item.uid" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header no-bd">
+                <h5 class="modal-title">
+                    <span class="fw-mediumbold">
+                        Thông Tin Khách Hàng
+                    </span>
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/Custormer/Create" method="post">
+                <div class="modal-body">
+                    <p class="small">Bạn vui lòng nhập đầy đủ thông tin</p>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="form-group form-group-default">
+                                <label>Họ Tên</label>
+                                <input id="Name" name="Name" type="text" class="form-control" placeholder="Vui Lòng Nhập Thông Tin" required>
+                                <input id="uid" hidden name="uid" type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group form-group-default">
+                                <label>Số Điện Thoại</label>
+                                <input id="SDT" name="SDT" type="text" class="form-control" placeholder="Vui Lòng Nhập Thông Tin" required>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group form-group-default">
+                                <label>Email</label>
+                                <input id="Email" name="Email" type="email" class="form-control" placeholder="Vui Lòng Nhập Thông Tin" required>
+
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group form-group-default">
+                                <label>Ngày Sinh</label>
+                                <input type="date" value="dd-mm-yyyy" id="birthday" class="form-control" name="birthday">
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group form-group-default">
+                                <label>Đỉa Chỉ</label>
+                                <input id="adress" class="form-control" name="adress">
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer no-bd">
+                    <button type="submit" id="addRowButton" class="btn btn-primary">Lưu</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+
+        $(document).ready(function () {
+
+            $("#btnAdd").click(function () {
+
+                $(".form-control").val("")
+                $('#addRowModal').modal("show");
+
+            });
+            $(document).on('click', 'button[name=Edit]', function () {
+
+                $('#addRowModal').modal("show");
+
+
+                $("#uid").val($(this).attr("id"));
+
+                $("#Name").val($(this).closest('tr').find("td:eq(0)").text())
+
+
+                $("#birthday").val($(this).closest('tr').find("td:eq(1)").text().trim())
+                $("#Email").val($(this).closest('tr').find("td:eq(2)").text())
+                $("#SDT").val($(this).closest('tr').find("td:eq(3)").text())
+                $("#adress").val($(this).closest('tr').find("td:eq(4)").text())
+                console.log($(this).attr("id"))
+                @*var Name = $(this).closest('tr').find("td:eq(1)").text();
+                $("#addName").val(Name);
+                $("#idCategory").val(id)*@
+
+            });
+        });
+    </script>
+}

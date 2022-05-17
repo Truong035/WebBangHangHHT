@@ -1,0 +1,378 @@
+﻿@model WebBanHang.Models.Emtity.Product
+
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    WebBanHangDB DB = new WebBanHangDB();
+}
+@using WebBanHang.Models.Emtity
+
+<!-- End Header Area -->
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Product Details Page</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="single-product.html">product-details</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+<!--================Single Product Area =================-->
+<div class="product_image_area">
+    <div class="container">
+        <div class="row s_product_inner">
+            <div class="col-lg-6">
+                <div class="s_Product_carousel">
+                    <div class="single-prd-item">
+                        <img class="img-fluid" src="@Model.image" alt="">
+                    </div>
+                    @foreach (var item in Model.Imgs)
+                    {
+                        <div class="single-prd-item">
+                            <img class="img-fluid" src="@item.Url" alt="">
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-lg-5 offset-lg-1">
+                <div class="s_product_text">
+                    <h3>@Model.name</h3>
+                    <h2>@Model.price.Value.ToString("N0")</h2>
+                    <ul class="list">
+                        <li><a class="active" href="#"><span>Danh mục </span> : @Model.Categorie.display_name</a></li>
+                        <li><a href="#"><span>Số lượng còn</span> : @Model.stock</a></li>
+                    </ul>
+                    <form method="get" action="/Home/AddCart/@Model.Id">
+                        <div class="product_count">
+                            <label for="qty">Số lượng:</label>
+                            <input type="text" name="quantity" required id="sst" maxlength="12" value="1" title="Quantity:" class="input-text qty">
+                            <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                    class="increase items-count" type="button">
+                                <i class="lnr lnr-chevron-up"></i>
+                            </button>
+                            <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                                    class="reduced items-count" type="button">
+                                <i class="lnr lnr-chevron-down"></i>
+                            </button>
+                        </div>
+
+                        <div class="product_count">
+                            <label for="qty">Kích thước:</label>
+                            <br />
+                            @foreach (var item in Model.Option_Product)
+                            {
+
+                                <label for="qtys">  <input required  value="@item.Id" type="radio"  name="Option" class="input-text"> @item.option</label>
+                            }
+
+
+                        </div>
+
+                        <div class="card_area d-flex align-items-center">
+                            <button type="submit" class="primary-btn">Add to Cart</button>
+                            <a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
+                            <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <br />
+
+    </div>
+</div>
+<!--================End Single Product Area =================-->
+<!--================Product Description Area =================-->
+<section class="product_description_area">
+    <div class="container">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Mô Tả</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
+                   aria-selected="false">Đánh giá</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <p>
+                    @Html.Raw(Model.description)
+                </p>
+            </div>
+
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="comment_list">
+                            @foreach (var item in Model.Comments)
+                            {
+                                <div class="review_item">
+                                    <div class="media">
+                                        <div class="d-flex">
+                                            <img src="~/Content/img/product/review-1.png" alt="">
+                                        </div>
+                                        <div class="media-body">
+                                            <h4>@item.UseName</h4>
+                                            <h5>@item.CreateDate.ToString()</h5>
+                                            <a class="reply_btn" href="#">Reply</a>
+                                        </div>
+                                    </div>
+                                    <p>
+                                        @Html.Raw(item.Comment1)
+                                    </p>
+                                </div>
+                            }
+
+                            @*<div class="review_item reply">
+                                    <div class="media">
+                                        <div class="d-flex">
+                                            <img src="~/Content/img/product/review-2.png" alt="">
+                                        </div>
+                                        <div class="media-body">
+                                            <h4>Blake Ruiz</h4>
+                                            <h5>12th Feb, 2018 at 05:56 pm</h5>
+                                            <a class="reply_btn" href="#">Reply</a>
+                                        </div>
+                                    </div>
+                                    <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+                                        dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                        commodo
+                                    </p>
+                                </div>*@
+                            <div class="review_item">
+                                <div class="media">
+                                    <div class="d-flex">
+                                        <img src="~/Content/img/product/review-3.png" alt="">
+                                    </div>
+                                    <div class="media-body">
+                                        <h4>Blake Ruiz</h4>
+                                        <h5>12th Feb, 2018 at 05:56 pm</h5>
+                                        <a class="reply_btn" href="#">Reply</a>
+                                    </div>
+                                </div>
+                                <p>
+                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
+                                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                    commodo
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="col-lg-6">
+                            <div class="review_box">
+                                <h4>Post a comment</h4>
+                                <form class="row contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="name" name="name" placeholder="Your Full name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" id="email" name="email" placeholder="Email Address">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="number" name="number" placeholder="Phone Number">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <textarea class="form-control" name="message" id="message" rows="1" placeholder="Message"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 text-right">
+                                        <button type="submit" value="submit" class="btn primary-btn">Submit Now</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>*@
+                </div>
+            </div>
+            <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="row total_rate">
+                            <div class="col-6">
+                                <div class="box_total">
+                                    <h5>Đánh giá</h5>
+                                    <h4>@Math.Round(Model.rating_star.Value, 2)</h4>
+                                    <h6>(@Model.Comments.Count Bình luận)</h6>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="rating_list">
+                                    <h3>Dựa trên @Model.Comments.Count Nhận xét</h3>
+                                    <ul class="list">
+                                        <li>
+                                            <a href="#">
+                                                5 Sao <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i> @Model.Comments.Where(x => x.Start == 5).Count()
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                4 Sao <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i> @Model.Comments.Where(x => x.Start == 4).Count()
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                3 Sao <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i> @Model.Comments.Where(x => x.Start == 3).Count()
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                2 Sao <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i> @Model.Comments.Where(x => x.Start == 2).Count()
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                1 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i> @Model.Comments.Where(x => x.Start == 1).Count()
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review_list">
+                            @foreach (var item in Model.Comments)
+                            {
+                                <div class="review_item">
+                                    <div class="media">
+                                        <div class="d-flex">
+                                            <img src="~/Content/img/product/review-1.png" alt="">
+                                        </div>
+                                        <div class="media-body">
+                                            <h4>@item.UseName</h4>
+                                            <span>@item.CreateDate.ToString()</span><br />
+                                            @for (int i = 0; i < item.Start; i++)
+                                            {
+                                                <i class="fa fa-star"></i>
+                                            }
+
+
+
+                                        </div>
+                                    </div>
+                                    <p>
+                                        @item.Comment1
+                                    </p>
+                                </div>
+                            }
+
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="review_box">
+                            <h4>Add a Review</h4>
+                            <p>Your Rating:</p>
+                            <ul class="list">
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                                <li><a href="#"><i class="fa fa-star"></i></a></li>
+                            </ul>
+                            <p>Outstanding</p>
+                            <form class="row contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Your Full name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Full name'">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address'">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="number" name="number" placeholder="Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone Number'">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="message" id="message" rows="1" placeholder="Review" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Review'"></textarea></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 text-right">
+                                    <button type="submit" value="submit" class="primary-btn">Submit Now</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Product Description Area =================-->
+<!-- Start related-product Area -->
+<section class="related-product-area section_gap_bottom">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <div class="section-title">
+                    <h1>Sản phẩm liên quan</h1>
+                   
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="row">
+                    @foreach (var item in DB.Products.Where(x => x.category_id == Model.category_id && x.Id != Model.Id).OrderByDescending(x=>x.Id).Take(9))
+                    {
+
+                        <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+                            <div class="single-related-product d-flex">
+                                <a href="#"><img src="@item.image" width="100" alt=""></a>
+                                <div class="desc">
+                                    <a href="#" class="title">@item.name</a>
+                                    <div class="price">
+                                        @{if (item.discount != null && item.discount.Length > 0)
+                                            {
+                                                <h6>$@(item.price.Value.ToString("N0"))</h6>
+                                                <h6 class="l-through">$@item.price_before_discount.Value.ToString("N0")</h6>
+                                            }
+                                            else
+                                            {
+                                                <h6>
+                                                    @String.Format("{0:C}", item.price.Value);
+
+                                                </h6>
+
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="ctg-right">
+                    <a href="#" target="_blank">
+                        <img class="img-fluid d-block mx-auto" src="~/Content/img/category/c5.jpg" alt="">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End related-product Area --

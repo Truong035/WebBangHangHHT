@@ -1,0 +1,148 @@
+﻿@model IEnumerable<WebBanHang.Models.Emtity.VoucherOrder>
+
+@{
+    ViewBag.Title = "GetAllOrder";
+    int statust = (int)ViewBag.Status;
+}
+
+<div class="mt-5 p-3 pt-5">
+    <div class=" p-5 " style="height:400px;">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link @(statust==1?"active":"")" href="/Home/GetAllOrder/1">Chờ xác nhận</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(statust==2?"active":"")" href="/Home/GetAllOrder/2">Đã xác nhận</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link  @(statust==3?"active":"")" href="/Home/GetAllOrder/3">Đang giao</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link  @(statust==5?"active":"")" href="/Home/GetAllOrder/4">Đã giao</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link  @(statust==6?"active":"")" href="/Home/GetAllOrder/6">Đã hủy</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link  @(statust==7?"active":"")" href="/Home/GetAllOrder/7">Trả hàng</a>
+            </li>
+        </ul>
+        <div class="mt-2">
+            @{ if (Model.Count() > 0)
+                {
+                    <h3>Danh sách đơn đặt</h3>
+                    <table class="table text-center">
+                        <tr>
+
+                            <th>
+                                Người nhận
+                            </th>
+                            <th>
+                                Đỉa Chỉ
+                            </th>
+                            <th>
+                                Số điện thoại
+                            </th>
+                            <th>
+                                Email
+                            </th>
+
+                            <th>
+                                Ngày Đặt
+                            </th>
+
+                            <th>
+                                Tổng tiền
+                            </th>
+
+                            <th>
+                                Hình thức thanh toán
+                            </th>
+                            <th>
+                                Ngày giao
+                            </th>
+                            <th></th>
+                        </tr>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.adrees)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.telephone)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.email)
+                                </td>
+
+                                <td>
+                                    @item.createdate.Value.ToString()
+                                </td>
+
+                                <td>
+                                    @((item.grossAmount+@item.shiper).Value.ToString("N0")) VNĐ
+                                </td>
+
+                                <td>
+                                    @(item.paymentmethods==1?"Nhận hàng mới thanh toán":"Thanh toán online")
+                                </td>
+
+                                <td>
+                                    @(item.deliver_time==null?"Chưa xác định": item.deliver_time)
+                                </td>
+                                <td>
+                                    <div class="row">
+                                        <a href="/Home/DetailOrder/@item.id" type="button" class="btn btn-outline-info">Xem</a>
+                                        @if (item.status < 3)
+                                        {
+                                            <button id="@item.id" name="Cancel" type="button" class="btn btn-outline-danger">Hủy hàng </button>
+                                        }
+
+                                    </div>
+
+                                </td>
+                            </tr>
+                        }
+
+                    </table>
+
+                }
+                else
+                {
+                    <div class="alert alert-info" role="alert">
+                        Chưa có đơn đặt nào
+                    </div>
+
+                }
+
+            }
+
+        </div>
+
+
+
+
+    </div>
+
+</div>
+
+
+@section  scripts{
+    <script>
+        $(document).ready(function () {
+            $(document).on('click', "button[name = 'Cancel']", function () {
+
+                $("#idorder").val(this.id);
+                $("#ModalCancel").modal("show");
+            });
+
+        })
+
+    </script>
+}

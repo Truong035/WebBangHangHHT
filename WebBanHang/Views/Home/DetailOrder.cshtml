@@ -1,0 +1,174 @@
+﻿@model WebBanHang.Models.Emtity.VoucherOrder
+@{
+    ViewBag.Title = "DetailOrder";
+}
+
+
+@section  scripts{
+    <script>
+        $(document).ready(function () {
+            $("#btnCancel").click(function () {
+                let id = window.location.href.split('/').pop();
+                $("#idorder").val(id);
+            });
+
+        })
+
+    </script>
+}
+<div class="pt-5">
+    <div class="container col-8 mt-5 pt-5">
+        <h4 class="text-start">Thông tin đơn hàng</h4>
+        <div class="row">
+            <div class="p-2 col">
+                <label for="Name" class="form-label">Họ Tên Khác Hàng</label>
+                <input required class="form-control" type="text" value="@Model.Name" name="Name" placeholder="Họ Tên" aria-label="default input example">
+            </div>
+            <div class="p-2 col">
+                <label for="Email" class="form-label">Email Khác Hàng</label>
+                <input required class="form-control" name="Email" value="@Model.email" type="email" placeholder="Email" aria-label="default input example">
+            </div>
+        </div>
+        <div class="row">
+            <div class="p-2 col">
+                <label for="SDT" class="form-label">SĐT Khác Hàng</label>
+                <input required class="form-control" type="text" value="@Model.telephone" name="SDT" placeholder="Họ Tên" aria-label="default input example">
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="p-2 col">
+                <label for="region" class="form-label">Tỉnh</label>
+                <select required class="form-control" id="region" name="region" type="text" placeholder="Default input" aria-label="default input example">
+                    <option>@Model.province</option>
+                </select>
+            </div>
+            <div class="p-2 col">
+                <label for="district" class="form-label">Quận,Huyện</label>
+                <select required class="form-control" name="district" id="district" type="text" aria-label="default input example">
+                    <option>@Model.district</option>
+                </select>
+            </div>
+            <div class="p-2 col">
+                <label for="ward" class="form-label">Phường</label>
+                <select required class="form-control" name="ward" id="ward" type="text" aria-label="default input example">
+                    <option>@Model.ward</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="mb-3 col">
+                <label for="Adress" class="form-label">Đỉa chỉ </label>
+                <input required class="form-control" name="Adress" value="@Model.adrees" type="text" placeholder="Đỉa chỉ" aria-label="default input example">
+            </div>
+            <div class="mb-3 col">
+                <label for="exampleFormControlTextarea1" class="form-label">Ghi chú </label>
+                <textarea name="Note" class="form-control" id="exampleFormControlTextarea1" rows="3">@Model.note</textarea>
+            </div>
+        </div>
+    </div>
+    @foreach (var item in Model.VoucherOrderDetails)
+    {
+
+        <div class="col-8 container d-flex justify-content-around ">
+            <div class="card-body card col-5">
+                <div class="d-flex justify-content-around align-items-center">
+                    <div>
+                        <img src="@item.Product.image" class="rounded float-start" width="100" height="120" alt="...">
+                    </div>
+                    <div class="ps-5">
+                        <p> @item.Product.name </p>
+                        <p>  <span class="mr-2">   Số Lượng : 12</span> <span class="ms-5">   Gía tiền @item.Product.price.Value.ToString("N0")  VNĐ  </span>  </p>
+
+                        <p> Thành Tiền @((item.grossAmount.Value - item.discountAmount).Value.ToString("N0"))  VNĐ </p>
+                    </div>
+                    <div>
+                        <a href="/Home/Detail/@item.product_id">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        @*hau code*@
+                        @if (Model.status == 4)
+                        {
+                            <div style="margin:20px">
+                                <button type="button" class="btn btn-primary" onclick="danhgia('@item.Product.image', '@item.Product.name', '@item.id', '@item.Product.Id')">Viết đánh giá</button>
+
+                            </div>
+                        }
+
+
+                        @*hau code*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    <div class="col-8  container mt-4 mb-5">
+        <div class="p-2">
+
+            <label class="w-100 p-2"> Giá trị hàng  @((Model.grossAmount.Value - Model.discountAmount.Value).ToString("N0")) VNĐ</label>
+            <div id="frmpayment">
+                <label class="w-100  p-2 " id="free"> Tiền ship @Model.shiper.Value.ToString("N0") VNĐ</label>
+
+                <label class="w-100 border-top"></label>
+                <label class="w-100  p-2" id="payment"> Tổng Tiền Khác Phải Trả :   @((Model.grossAmount.Value-Model.discountAmount.Value+Model.shiper).Value.ToString("N0"))  VNĐ </label>
+                <label class="w-100   p-2">Hình thức thanh toán : @(Model.status==1?"Thanh toán khi nhận hàng": "Thanh toán online")</label>
+                <label class="w-100 border-top"></label>
+            </div>
+            @if (Model.status < 3)
+            {
+
+                <button type="button" data-bs-toggle="modal" data-bs-target="#ModalCancel" id="btnCancel" class="btn btn-outline-danger">Hủy đơn hàng</button>
+
+            }
+
+        </div>
+    </div>
+
+    <div class="hidemodal">
+
+    </div>
+</div>
+
+<script>
+    function danhgia(url, name, id, idproduct) {
+        $('.hidemodal').append('<div class="modal modalevaluate" tabindex="-1" role="dialog" style="display:block;background-color: rgba(0, 0, 0, 0.5);">'+
+          '<div class="modal-dialog" role="document" ><div class="modal-content" style="width: 700px;"><div class="modal-header">' +
+          ' <h5 class="modal-title">Viết đánh giá</h5><button type="button" class="btn btn-light" onclick=" removemodalevaluate()">X Đóng</button>' +
+            '</div><div class="modal-body" style="padding: 40px;"> <div class="form-group row"> <div>' +
+            '<img src="' + url + '" class="rounded float-start" style="max-height: 300px;" >' +
+            '</div> <div > <h5>' + name + '</h5> </div>  </div> <div class="form-group row"><span >Bạn cảm thấy sản phẩm này như thế nào? :</span>' +
+           ' <select class="form-control chosestar" style="width:200px" > <option value="" selected > Choose option</option>'+
+           '<option value="5">5 sao</option><option value="4">4 sao</option><option value="3">3 sao</option> <option value="2">2 sao</option><option value="1">1 sao</option>'+
+           '</select>  </div>  <div class="form-group row"> <textarea style="margin-top:20px" class="form-control messageevaluate" id="exampleFormControlTextarea1" rows="3" placeholder="mời bạn chia sẻ thêm cảm nhận về sản phẩm"></textarea>'+
+            '</div> </div> <button type="button" id="confirmregisteradd" class="btn btn-primary" onClick="ckeckevaluate(' + id + ',' + idproduct+')">Gửi đánh giá</button></div></div></div >')
+
+    }
+
+    function ckeckevaluate(id, idproduct) {
+        if ($('.chosestar').val() == '') {
+            alert('vui lòn chọn số sao');
+
+        }
+        else {
+            $.ajax({
+                url: '/Comestic/savevalute', type: 'post',
+                data: {
+                    id: id,
+                    idproduct: idproduct,
+                    point: $('.chosestar').val(),
+                    mesage: $('.messageevaluate').val(),
+
+                },
+                success: function (data) {
+                    $('.modalevaluate').remove()
+                },
+
+            });
+        }
+    }
+    function removemodalevaluate() {
+        $('.modalevaluate').remove()
+    }
+</script>

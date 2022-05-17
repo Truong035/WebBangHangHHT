@@ -1,0 +1,100 @@
+﻿@model IEnumerable<WebAdmin.Models.Product>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    User user = (User)Session["Login"];
+
+}
+@using WebAdmin.Models.Login;
+@using WebAdmin.Contant;
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#btnAdd").click(function () {
+                $("#addName").val("");
+                $("#idCategory").val("")
+                $('#addRowModal').modal("show");
+            });
+            $(document).on('click', 'button[name=Edit]', function () {
+                $('#addRowModal').modal("show");
+                var id = $(this).closest('tr').find("td:eq(0)").text();
+                var Name = $(this).closest('tr').find("td:eq(1)").text();
+                $("#addName").val(Name);
+                $("#idCategory").val(id)
+            });
+        });
+
+    </script>
+}
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title">Danh Sách Sản Phẩm</h4>
+                <a href="/Product/Create" class="btn btn-primary btn-round ml-auto">
+                    <i class="fa fa-plus"></i>
+                    Thêm Mới
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+
+
+            <div class="table-responsive">
+                <table id="add-row" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Mức Giá</th>
+                            <th>Giảm Giá</th>
+                            <th>Số Lượng</th>
+                            <th></th>
+                            @*@if (user != null && user.position == true)
+                                {*@
+                            <th style="width: 10%">Action</th>
+                            @*}*@
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.name</td>
+                                <td>@item.Categorie.display_name</td>
+                                <td>@(item.price!=null?item.price.Value.ToString("N0")+ " VND": "Chưa Cập Nhật")</td>
+                                <td>@(item.discount)</td>
+                                <td>@item.stock</td>
+                                <td>  <div class="p-2">  <img src="@item.image" width="80" /> </div> </td>
+                                @*@if (user != null && user.position == true)
+                                    {*@
+                                <td>
+                                    <div class="form-button-action">
+                                        <a href="/EditProduct/@item.Id" name="Edit" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                        <a target="_blank" href="@(UrlConTant.UrlDetail)/Home/Detail/@item.Id" name="Edit" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="See">
+                                            <i class="fa icon-eye"></i>
+                                        </a>
+
+                                        <a href="/Product/Delete/@item.Id" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                @*}*@
+
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

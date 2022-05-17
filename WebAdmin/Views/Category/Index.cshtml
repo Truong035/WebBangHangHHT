@@ -1,0 +1,194 @@
+﻿@model IEnumerable<WebAdmin.Models.Categorie>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    User user = (User)Session["Login"];
+}
+@using WebAdmin.Models.Login
+
+@section scripts{
+    <script>
+        function readURL(input) {
+
+            if (input.files && input.files[0]) {
+                var img = $('#file-upload-content');
+                $(this).empty();
+                var formdata = new FormData();
+                formdata.append('file', input.files[0]);
+                var let = "";
+                $.ajax({
+                    type: 'POST',
+                    url: '/File/SaveImg',
+                    contentType: false, //Khong co hear
+                    processData: false,//Khong Xu Ly Du Lieu
+                    data: formdata,
+                    success: function (data) {
+                        $(img).empty();
+                        $("#Url").val(data.path)
+                        $("#UrlImg").val(data.path);
+                        var let = `<div class="col-auto">
+                <input class="txtlinkHinh" value="`+ data.path + `" hidden />
+                <img class="file-upload-image" width="230px" height="150px"  src="` + data.path + `" alt="your image" />
+            </div>
+            <i class="col-auto bi bi-x-circle-fill remove-image " onclick="removeUpload(this)"  style="margin-left:-4% ;margin-top:-1%; font-size: 1.5rem; color: #ff0000"></i>`;
+                        $(img).append(let);
+                        $(img).show();
+                        $(input).val("");
+                    }
+                });
+
+            };
+        }
+        $(document).ready(function () {
+
+            $("#btnAdd").click(function () {
+                $("#addName").val("");
+
+                $("#idCategory").val("")
+                $('#addRowModal').modal("show");
+                $("#UrlImg").val("")
+                $('#file-upload-content').empty();
+
+            });
+            $(document).on('click', 'button[name=Edit]', function () {
+
+                $('#addRowModal').modal("show");
+                $("#Url").val($(this).closest('tr').find("img:eq(0)")[0].currentSrc)
+             
+                var id = $(this).closest('tr').find("td:eq(0)").text();
+                var Name = $(this).closest('tr').find("td:eq(1)").text();
+                $("#addName").val(Name);
+                $("#idCategory").val(id)
+                var img = $('#file-upload-content');
+                $(img).empty();
+                $("#Url").val($(this).closest('tr').find("img:eq(0)")[0].currentSrc)
+               
+                var let = `<div class="col-auto">
+                <input class="txtlinkHinh" value="`+ $(this).closest('tr').find("img:eq(0)")[0].currentSrc + `" hidden />
+                <img class="file-upload-image" width="230px" height="150px"  src="` + $(this).closest('tr').find("img:eq(0)")[0].currentSrc + `" alt="your image" />
+            </div>
+            <i class="col-auto bi bi-x-circle-fill remove-image " onclick="removeUpload(this)"  style="margin-left:-4% ;margin-top:-1%; font-size: 1.5rem; color: #ff0000"></i>`;
+                $(img).append(let);
+                $(img).show();
+
+            });
+        });
+    </script>
+}
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title">Danh Mục</h4>
+                @*// @if (user != null && user.position == true)
+                        //   {
+                        <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
+                            <i class="fa fa-plus"></i>
+                            Thêm Mới
+                        </button>
+                    //   }*@
+                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
+                    <i class="fa fa-plus"></i>
+                    Thêm Mới
+                </button>
+
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Modal -->
+            <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header no-bd">
+                            <h5 class="modal-title">
+                                <span class="fw-mediumbold">
+                                    Thông Tin Danh Mục
+                                </span>
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="/Category/Create" method="post">
+                            <div class="modal-body">
+                                <p class="small">Bạn vui lòng nhập đầy đủ thông tin</p>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group form-group-default">
+                                            <label>Tên Danh Mục</label>
+                                            <input id="addName" name="Name" type="text" class="form-control" placeholder="Vui Lòng Nhập Thông Tin" required>
+                                            <input id="idCategory" hidden name="idCategory" type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12  d-flex justify-content-center">
+                                    <div class="mr-3">
+                                        <button class="btn btn-sm btn-option" type="button" onclick="$('.addImg').trigger( 'click' )" )>Chọn ảnh </button>
+
+                                    </div>
+                                    <input class="addImg" id="addImg" hidden type='file' onchange="readURL(this);" accept="image/*" />
+                                    <input  id="Url" hidden name="Url"   type='text'  />
+                                    <div class=" card-body row file-upload-content" id="file-upload-content" name=btnanh style="margin-top:-2%">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer no-bd">
+                                <button type="submit" id="addRowButton" class="btn btn-primary">Lưu</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="add-row" class="display table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Tên Danh Mục</th>
+                            <th>Hình Ảnh</th>
+                            <th>#</th>
+                            @if (user != null && user.position == true)
+                            {
+                                <th style="width: 10%">Action</th>
+                            }
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.display_name</td>
+
+                                <td><div class="p-2">   <img src="@item.image" width="100" /> </div></td>
+                                @*@if (user != null && user.position == true)
+                                    {*@
+                                <td>
+                                    <div class="form-button-action">
+                                        <button type="button" name="Edit" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <a href="/Category/Delete/@item.Id" data-toggle="tooltip" title="" class="btn btn-link btn-danger" data-original-title="Remove">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                                @*//    }*@
+
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

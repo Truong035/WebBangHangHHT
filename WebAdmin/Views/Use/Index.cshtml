@@ -1,0 +1,306 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+@model UserView
+@{
+
+}
+@using WebAdmin.Models.ModelView;
+<div class="modal " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="use-form">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thông Tin Tài Khoản</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="UserName">Họ Tên</label>
+                        <input required type="text" class="form-control" id="UserName" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="Email">Tên đăng nhập</label>
+                        <input required type="text" class="form-control" id="Email" placeholder="Email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="idRole">Chức vụ</label>
+                        <select required class="form-control form-control-sm" id="idRole">
+                            <option value="">Vui lòng chọn </option>
+                            @foreach (var item in Model.Role)
+                            {
+                                <option value="@item.id"> @item.Name </option>
+                            }
+                        </select>
+                    </div>
+
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="col-lg-12 grid-margin stretch-card" id="frm1">
+    <div class="card">
+        <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="m-3 border-bottom pb-3">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Danh Sách Người Dùng</h4>
+                            <div class="ml-auto">
+                                <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#exampleModal">
+                                   
+                                        <i class="ti-plus"></i>
+                                        Thêm Mới
+                                    </button>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="table-responsive">
+                                    <table id="data-table" class="display expandable-table" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    MaNV
+                                                </th>
+                                                <th>
+                                                    Tên
+                                                </th>
+                                                <th>
+                                                    Tên đăng nhập
+                                                </th>
+                                                <th>
+                                                    Chức vụ
+                                                </th>
+
+                                                <th>
+                                                    #
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @foreach (var item in Model.User)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @item.id
+                                                    </td>
+                                                    <td>
+                                                        @item.UserName
+                                                    </td>
+                                                    <td>
+                                                        @(item.Email!=null? item.Email : "Chưa cập nhật")
+                                                    </td>
+                                                    <td id="@item.idRole">
+                                                        @item.Role.Name
+                                                    </td>
+                                                    <td>
+                                                   
+                                                            <div class="form-button-action">
+                                                                <button name="Edit" type="button" data-toggle="tooltip" title="" class="btn  btn-icon-text text-primary  " data-original-title="Edit Task">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </button>
+                                                                <button name="Delete" class="btn  btn-icon-text text-danger">
+                                                                    <i class="fa fa-times"></i>
+                                                                </button>
+                                                                <button name="Reload" class="btn  btn-icon-text text-info">
+                                                                    <i class="ti-reload"></i>
+                                                                </button>
+
+                                                            </div>
+                                                    </td>
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="position-fixed end-0 mt-5 pt-2 " style="z-index: 11">
+            <div id="liveToast" class="toast hide bg-success text-white p-2" role="alert" aria-live="assertive" aria-atomic="true">
+                Cập nhật thành công
+            </div>
+        </div>
+        <div class="position-fixed end-0 mt-5 pt-2 " style="z-index: 11">
+            <div id="livefail" class="toast hide bg-danger text-white p-2" role="alert" aria-live="assertive" aria-atomic="true">
+                Cập nhật thất bại
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+    $(document).ready(function () {
+
+     
+        let id = 0;
+        $('#use-form').on('submit', function (e) {
+            e.preventDefault();
+            var data = {
+                id: id,
+                UserName: $("#UserName").val(),
+                Email: $("#Email").val(),
+                idRole: $("#idRole").val()
+            }
+            $.ajax({
+                async: false,
+                url: "/Use/Create",
+                type: "POST",
+                data: { use: data}
+            }).done(
+                function (res) {
+                    if (res.Success) {
+                        $("#exampleModal").modal("hide")
+                        $("#liveToast").empty();
+                        $("#liveToast").append(res.Message);
+                        $("#liveToast").toast("show");
+                        setTimeout( myGreeting, 2000);
+                    }
+                    else {
+                        $("#livefail").empty();
+                        $("#livefail").append(res.Message);
+                        $("#livefail").toast("show");
+                    }
+
+                }
+            );
+        });
+
+        $(document).on('click', "button[name = 'Edit']", function () {
+            id =$(this).closest('tr').find("td:eq(0)").text().trim()
+            ;
+            $("#idRole").val($(this).closest('tr').find("td:eq(3)").attr("id"))
+            console.log(id);
+            $("#UserName").val($(this).closest('tr').find("td:eq(1)").text().trim());
+            $("#Email").val($(this).closest('tr').find("td:eq(2)").text().trim());
+            $("#exampleModal").modal("show")
+        });
+
+        $(document).on('click', "button[name = 'Reload']", function () {
+            let id = $(this).closest('tr').find("td:eq(0)").text().trim();
+            let tr = $(this).closest('tr');
+            swal({
+                title: 'Bạn có chắn reset lại mật khẩu của tài khoản này không ?',
+                text: "Nếu bạn reset mật khẩu của tài khoản này là 123456",
+                type: 'warning',
+                buttons: {
+                    cancel: {
+                        visible: true,
+                        text: 'Hủy bỏ',
+                        className: 'btn btn-danger'
+                    },
+                    confirm: {
+                        text: 'Đồng ý',
+                        className: 'btn btn-success'
+                    }
+                }
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        async: false,
+                        url: "/Use/ResetPass/" + id,
+                        type: 'GET',
+                    }).done(function (res) {
+                        if (res.success) {
+                            swal("Reset thành công", {
+                                icon: "success",
+                                buttons: {
+                                    confirm: {
+                                        className: 'btn btn-success'
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            swal("Thất bại!", res.message, {
+                                icon: "error",
+                                buttons: {
+                                    confirm: {
+                                        className: 'btn btn-success'
+                                    }
+                                },
+                            });
+                        }
+                    });
+                }
+            });
+
+        });
+        $(document).on('click', "button[name = 'Delete']", function () {
+            let id = $(this).closest('tr').find("td:eq(0)").text().trim();
+            let tr = $(this).closest('tr');
+            swal({
+                title: 'Bạn có chắn chắn xóa hay không ?',
+                text: "",
+                type: 'warning',
+                buttons: {
+                    cancel: {
+                        text: 'Hủy bỏ',
+                        className: 'btn btn-danger'
+                    },
+                    confirm: {
+                        text: 'Đồng ý',
+                        className: 'btn btn-success'
+                    }
+                }
+            }).then((willDelete) => {
+                if (willDelete) {
+                    $.ajax({
+                        async: false,
+                        url: "/Use/DeleteUse/" + id,
+                        type: 'GET',
+                    }).done(function (res) {
+                        if (res.Success) {
+                            $(tr).empty()
+                            swal("Xóa thành công", {
+                                icon: "success",
+                                buttons: {
+                                    confirm: {
+                                        className: 'btn btn-success'
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            swal("Thất bại!", res.Message, {
+                                icon: "error",
+                                buttons: {
+                                    confirm: {
+                                        className: 'btn btn-success'
+                                    }
+                                },
+                            });
+                        }
+                    });
+                }
+            });
+
+        });
+    })
+    function myGreeting() {
+        window.location = "/Use/Index"
+    }
+    </script>
+}

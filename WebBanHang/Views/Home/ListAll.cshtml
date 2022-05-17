@@ -1,0 +1,296 @@
+﻿
+@model PagedList.IPagedList<WebBanHang.Models.Emtity.Product>
+@{
+    ViewBag.Title = "ListAll";
+    WebBanHangDB DB = new WebBanHangDB();
+}
+@using PagedList.Mvc;
+@using WebBanHang.Models.Emtity
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+    <div class="container">
+        <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+            <div class="col-first">
+                <h1>Shop Category page</h1>
+                <nav class="d-flex align-items-center">
+                    <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
+                    <a href="category.html">Fashon Category</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+<div class="container">
+    <div class="row">
+        <div class="col-xl-3 col-lg-4 col-md-5">
+            <div class="sidebar-categories">
+                <div class="head">Browse Categories</div>
+                <ul class="main-categories">
+                    @foreach (var item in DB.Categories.ToList())
+                    {
+                        <li class="main-nav-list">
+                            <a href="/Home/ListAll/@item.Id">
+                                <span class="lnr lnr-arrow-right"></span>@item.display_name<span class="number">(@item.Products.Count)</span>
+                            </a>
+                        </li>
+                    }
+
+
+                </ul>
+            </div>
+            <div class="sidebar-filter mt-50">
+                <div class="top-filter-head">Product Filters</div>
+                <div class="common-filter">
+                    <div class="head">Brands</div>
+                    <form action="#">
+                        <ul>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="apple" name="brand"><label for="apple">Apple<span>(29)</span></label></li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="asus" name="brand"><label for="asus">Asus<span>(29)</span></label></li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="gionee" name="brand"><label for="gionee">Gionee<span>(19)</span></label></li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="micromax" name="brand"><label for="micromax">Micromax<span>(19)</span></label></li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="samsung" name="brand"><label for="samsung">Samsung<span>(19)</span></label></li>
+                        </ul>
+                    </form>
+                </div>
+                <div class="common-filter">
+                    <div class="head">Color</div>
+                    <form action="#">
+                        <ul>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="black" name="color"><label for="black">Black<span>(29)</span></label></li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="radio" id="balckleather" name="color"><label for="balckleather">
+                                    Black
+                                    Leather<span>(29)</span>
+                                </label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="radio" id="blackred" name="color"><label for="blackred">
+                                    Black
+                                    with red<span>(19)</span>
+                                </label>
+                            </li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="gold" name="color"><label for="gold">Gold<span>(19)</span></label></li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="spacegrey" name="color"><label for="spacegrey">Spacegrey<span>(19)</span></label></li>
+                        </ul>
+                    </form>
+                </div>
+                <div class="common-filter">
+                    <div class="head">Price</div>
+                    <div class="price-range-area">
+                        <div id="price-range"></div>
+                        <div class="value-wrapper d-flex">
+                            <div class="price">Price:</div>
+                            <span>$</span>
+                            <div id="lower-value"></div>
+                            <div class="to">to</div>
+                            <span>$</span>
+                            <div id="upper-value"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-9 col-lg-8 col-md-7">
+            <!-- Start Filter Bar -->
+
+            @using (Html.BeginForm("ListAll", "Home", FormMethod.Get))
+            {<div class="filter-bar d-flex flex-wrap align-items-center">
+
+    <div class="sorting">
+        <select class="form-select" name="sortOrder">
+            @{ if (((string)ViewBag.sortOrder).Equals("desc"))
+                {
+                    <option value="asc">Tăng dần</option>
+                    <option value="desc" selected>Giảm dần</option>
+                }
+                else
+                {
+                    <option value="asc" selected="selected">Tăng dần</option>
+                    <option value="desc">Giảm dần</option>
+                }
+            }
+        </select>
+    </div>
+    <div class=" sorting   mr-auto">
+        <input type="text" name="SearchString" class="form-control search-input-area" value="@((string)ViewBag.searchValue)" id="" placeholder="Tìm kiếm dịch vụ">
+
+        @Html.Hidden("page", (object)ViewBag.page)
+        @Html.Hidden("id", (object)ViewBag.idCategory)
+        @Html.Hidden("size", (object)ViewBag.pageSize)
+    </div>
+    <div class="sorting">
+        <input type="submit" class="search-btn btn search" name="Reset" value="Tìm kiếm" />
+    </div>
+    <div class="pagination">
+
+            @Html.PagedListPager(Model, page => Url.Action("ListAll/" + ViewBag.url,
+        new { page }))
+    
+    </div>
+</div>
+                    }
+
+           
+            <!-- End Filter Bar -->
+            <!-- Start Best Seller -->
+            <section class="lattest-product-area pb-40 category-list">
+                <div class="row">
+                    @foreach (var item in Model)
+                    {
+                        <!-- single product -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="single-product">
+                                <img class="img-fluid" src="@item.image" alt="">
+                                <div class="product-details">
+                                    <a class="  social-info" href="/Home/Detail/@item.Id">
+                                        @item.name
+                                    </a>
+                                    <div class="price">
+                                        @{if (item.discount != null && item.discount.Length > 0)
+                                            {
+                                                <h6>$@(item.price.Value.ToString("N0"))</h6>
+                                                <h6 class="l-through">$@item.price_before_discount.Value.ToString("N0")</h6>
+                                            }
+                                            else
+                                            {
+                                                <h6>
+                                                    @String.Format("{0:C}", item.price.Value)
+
+                                                </h6>
+
+                                            }
+                                        }
+
+
+                                    </div>
+                                    <div class="prd-bottom">
+
+                                        @*<a href="/Home/Detail/@item.Id" class="social-info">
+                                            <span class="ti-bag"></span>
+                                            <p class="hover-text">Thêm vào giỏ hàng</p>
+                                        </a>
+                                        <a href="" class="social-info">
+                                            <span class="lnr lnr-heart"></span>
+                                            <p class="hover-text">Yêu thích</p>
+                                        </a>
+
+                                        <a href="" class="social-info">
+                                            <span class="lnr lnr-move"></span>
+                                            <p class="hover-text">Xem chi tiết</p>
+                                        </a>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </section>
+            <!-- End Best Seller -->
+            <!-- Start Filter Bar -->
+            <div class="filter-bar d-flex flex-wrap align-items-center">
+                
+                <div class="pagination">
+                    <div class="d-flex paging-service">
+                        @*<div class="paging-service-1">
+                Trang @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+            </div>*@
+                        <div class="ml-5">
+                            @Html.PagedListPager(Model, page => Url.Action("ListAll/" + ViewBag.url,
+                        new { page }))
+                        </div>
+                    </div>
+                  
+                </div>
+            </div>
+            <!-- End Filter Bar -->
+        </div>
+    </div>
+</div>
+<section class="owl-carousel active-product-area section_gap">
+    <!-- single product slide -->
+
+    <div class="single-product-slider">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <div class="section-title">
+                        <h1>Sản phẩm mới nhất</h1>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- single product -->
+                @foreach (var item in DB.Products.Where(X => X.delete != true).OrderByDescending(X => X.Id).Take(8))
+                {
+                    <div class="col-lg-3 col-md-6">
+                        <div class="single-product">
+                            <img class="img-fluid" src="@item.image" alt="">
+                            <div class="product-details">
+                                <a class="  social-info link" href="/Home/Detail/@item.Id">
+                                    @item.name;
+                                </a>
+                                <div class="price">
+                                    <h6>$@item.price.Value.ToString("N0")</h6>
+                                    @if (item.discount != null && item.discount.Length > 0)
+                                    {
+
+                                        <h6 class="l-through">$@item.price_before_discount.Value.ToString("N0")</h6>
+                                    }
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+        </div>
+    </div>
+    <!-- single product slide -->
+    <div class="single-product-slider">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 text-center">
+                    <div class="section-title">
+                        <h1>Sản phẩm bán chạy</h1>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @foreach (var item in DB.Products.Where(X => X.delete != true).OrderByDescending(X => X.VoucherOrderDetails.Count).Take(8))
+                {
+                    <div class="col-lg-3 col-md-6">
+                        <div class="single-product">
+                            <img class="img-fluid" src="@item.image" alt="">
+                            <div class="product-details">
+                                <a class="  social-info link" href="/Home/Detail/@item.Id">
+                                    @item.name;
+                                </a>
+                                <div class="price">
+                                    <h6>$@item.price.Value.ToString("N0")</h6>
+                                    @if (item.discount != null && item.discount.Length > 0)
+                                    {
+
+                                        <h6 class="l-through">$@item.price_before_discount.Value.ToString("N0")</h6>
+                                    }
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,86 @@
+﻿@model WebBanHang.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+@using WebBanHang.Models,
+@using WebBanHang.Models.Emtity
+
+@{Html.RenderAction("Home", "Home");};
+
+<div class="modal fade" id="Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="exampleModalLabel">Đăng Ký</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Email</label>
+
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", placeholder = "Email" } })
+                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Tên </label>
+                        @Html.EditorFor(model => model.UseName, new { htmlAttributes = new { @Class = "form-control", name = "your_pass", placeholder = "Tên đăng nhập" } })
+                        @Html.ValidationMessageFor(model => model.UseName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Số Điện Thoại</label>
+                        @Html.EditorFor(model => model.SDT, new { htmlAttributes = new { Class = "form-control", name = "your_pass", placeholder = "Số điện thoại" } })
+                        @Html.ValidationMessageFor(model => model.SDT, "", new { @class = "text-danger" })
+                    </div>
+              
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Mật Khẩu</label>
+                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { type = "password", Class = "form-control", name = "your_pass", placeholder = "Password" } })
+                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Nhập Lại Mật Khẩu</label>
+                        @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { type = "password", Class = "form-control", name = "your_pass", placeholder = "Password" } })
+                        @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                    </div>
+
+                    <button type="submit" class="btn btn-outline-info form-control">Đăng Ký</button>
+
+
+                }
+
+                <div class="mt-2 mb-2  d-flex justify-content-between">
+                    <a href="/Account/Login" class="fw-bolder">Đăng Nhập</a>
+                    <a href="#" class="fw-bolder">Gửi SMS</a>
+                </div>
+                <div class="mt-3 d-flex justify-content-center">
+                    <div class="mt-3 d-flex justify-content-center">
+                        <button type="button" onclick="$('.0').trigger('click' )" class="btn btn btn-danger mr-1"> <i class="bi bi-google"></i>Google</button>
+                        <button type="button" class="btn btn-primary ms-1" onclick="$('.1').trigger('click' )"> <i class="bi bi-facebook"></i> Facebook</button>
+                    </div>
+                    <section id="socialLoginForm">
+                        @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+                    </section>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#Modal").modal("show");
+    })
+</script>
+
+
+
+
+

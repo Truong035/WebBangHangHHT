@@ -1,0 +1,101 @@
+﻿@model IEnumerable<WebAdmin.Models.Voucher>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="card">
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="m-3 border-bottom pb-3">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Danh Sách Người Dùng</h4>
+                        <div class="ml-auto">
+                            <a href="/Voucher/Create" class="btn btn-primary btn-round ml-auto" >
+
+                                <i class="ti-plus"></i>
+                                Thêm Mới
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="table-responsive">
+                                <table id="data-table" class="display expandable-table" style="width:100%">
+                                    <thead>
+                                        <tr>
+
+                                            <th>
+                                                Code
+                                            </th>
+                                        
+                                            <th>
+                                                Ngày bắt đầu
+                                            </th>
+                                            <th>
+                                                Ngày hết hạn
+                                            </th>
+
+                                            <th>
+                                                #
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @foreach (var item in Model)
+                                        {
+                                        <tr>
+
+                                            <td>
+                                                @item.voucher_code
+                                            </td>
+                                        
+                                            <td>
+                                                @item.start_time
+                                            </td>
+                                            <td>
+                                                @item.start_time
+                                            </td>
+                                            <td>
+
+                                                <div class="form-button-action">
+                                                    <button name="Edit" type="button" data-toggle="tooltip" title="" class="btn  btn-icon-text text-primary  " data-original-title="Edit Task">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <a name="Delete" href="/Voucher/Delete/@item.Id" class="btn  btn-icon-text text-danger">
+                                                        <i class="fa fa-times"></i>
+                                                    </a>
+                                                    <button name="Reload" class="btn  btn-icon-text text-info">
+                                                        <i class="ti-reload"></i>
+                                                    </button>
+
+                                                </div>
+                                            </td>
+
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="position-fixed end-0 mt-5 pt-2 " style="z-index: 11">
+        <div id="liveToast" class="toast hide bg-success text-white p-2" role="alert" aria-live="assertive" aria-atomic="true">
+            Cập nhật thành công
+        </div>
+    </div>
+    <div class="position-fixed end-0 mt-5 pt-2 " style="z-index: 11">
+        <div id="livefail" class="toast hide bg-danger text-white p-2" role="alert" aria-live="assertive" aria-atomic="true">
+            Cập nhật thất bại
+        </div>
+    </div>
+</div>

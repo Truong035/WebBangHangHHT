@@ -1,0 +1,317 @@
+﻿@model List<Cart>
+@{
+    ViewBag.Title = "ListOrder";
+    var Custormer = (Custormer)ViewBag.Use;
+}
+@using WebBanHang.Models.Emtity;
+
+<form action="/Home/ThanhToan" method="post" class="cart_area mt-2">
+    <div class="container col-8 mt-5">
+        <div class="row mt-2">
+            <div class="p-2 col">
+                <label for="Name" class="form-label">Họ Tên Khác Hàng</label>
+                <input required class="form-control" type="text" value="@Custormer.name" name="Name" placeholder="Họ Tên" aria-label="default input example">
+            </div>
+            <div class="p-2 col">
+                <label for="Email" class="form-label">Email Khác Hàng</label>
+                <input required class="form-control" name="Email" value="@Custormer.email" type="email" placeholder="Email" aria-label="default input example">
+            </div>
+        </div>
+        <div class="row">
+            <div class="p-2 col">
+                <label for="SDT" class="form-label">SĐT Khác Hàng</label>
+                <input required class="form-control" type="text" value="@Custormer.telephone" name="SDT" placeholder="Họ Tên" aria-label="default input example">
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="p-2 col">
+                <label for="region" class="form-label">Tỉnh</label>
+                <select required class="form-control " id="region" name="region" type="text" placeholder="Default input" aria-label="default input example">
+                </select>
+            </div>
+            <div class="p-2 col">
+                <label for="district" class="form-label">Quận,Huyện</label>
+                <select required class="form-control" name="district" id="district" type="text" aria-label="default input example">
+                </select>
+            </div>
+            <div class="p-2 col">
+                <label for="ward" class="form-label">Phường</label>
+                <select required class="form-control" name="ward" id="ward" type="text" aria-label="default input example">
+                </select>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="mb-3 col">
+                <label for="Adress" class="form-label">Đỉa chỉ </label>
+                <input required class="form-control" name="Adress" type="text" placeholder="Đỉa chỉ" aria-label="default input example">
+            </div>
+            <div class="mb-3 col">
+                <label for="exampleFormControlTextarea1" class="form-label">Ghi chú </label>
+                <textarea name="Note" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+            </div>
+        </div>
+    </div>
+
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">Kích thước</th>
+                            <th scope="col">Giá tiền</th>
+                            <th scope="col">Số lượng</th>
+                            <th scope="col">Tổng tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="media">
+                                        <div class="d-flex">
+                                            <img width="130" src="@item.Product.image" alt="">
+                                        </div>
+                                        <div class="media-body">
+                                            <p>@item.Product.name</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <h5>@item.Product.Option_Product.Where(X => X.Id == item.IdOption).FirstOrDefault().option</h5>
+                                </td>
+                                <td>
+                                    <h5>$@item.Product.price.Value.ToString("N0")</h5>
+                                </td>
+                                <td>
+                                    <div class="product_count">
+                                        <input type="text" name="qty" id="@item.id" maxlength="12" value="@item.quantity" title="Quantity:"
+                                               class="input-text qty">
+                                        <button onclick="var result = document.getElementById('@item.id'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                                class="increase items-count" type="button">
+                                            <i class="lnr lnr-chevron-up"></i>
+                                        </button>
+                                        <button onclick="var result = document.getElementById('@item.id'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                                                class="reduced items-count" type="button">
+                                            <i class="lnr lnr-chevron-down"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <h5>$@item.intomoney.Value.ToString("N0")</h5>
+                                </td>
+                            </tr>
+
+                        }
+
+               
+
+                        @*<tr class="shipping_area">
+                            <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+          
+                            </td>
+                            <td>
+                                <input id="ship" name="ship" hidden="hidden" />
+                                <div class="shipping_box">
+                                    <ul class="list">
+                                        <li> <label class="w-100  p-2 " id="free"> </label></li>
+                                  
+                                        <li>
+                                            <label class="w-100  p-2" id="payment"> Tổng Tiền Khác Phải Trả :  @Model.Sum(x => x.intomoney).Value.ToString("N0") VNĐ </label>
+                                        </li>
+                                   
+                                    </ul>
+                              
+                                </div>
+                            </td>
+                        </tr>*@
+                      
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+    <div class="col-8  container mt-4 mb-5">
+        <div class="p-2">
+            <input id="gross" hidden="hidden" value="@Model.Sum(x=>x.intomoney).Value" />
+            <label class="w-100 p-2"> Giá trị hàng  @Model.Sum(x => x.intomoney).Value.ToString("N0") VNĐ</label>
+            <div id="frmpayment">
+                <label class="w-100  p-2 " id="free"> </label>
+                <input id="ship" name="ship" hidden="hidden" />
+                <label class="w-100 border-top"></label>
+                <label class="w-100  p-2" id="payment"> Tổng Tiền Khác Phải Trả :  @Model.Sum(x => x.intomoney).Value.ToString("N0") VNĐ </label>
+                <label class="w-100 border-top"></label>
+            </div>
+
+        </div>
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="flexRadioPayment" value="momo" id="flexRadioDefault1">
+            <label class="form-check-label" for="flexRadioDefault1">
+                Thanh toán Online
+                <img src="~/Content/momo.ico" style="width:35px" />
+            </label>
+        </div>
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="radio" name="flexRadioPayment" value="a" id="flexRadioDefault2" checked>
+            <label class="form-check-label" for="flexRadioDefault2">
+                Thanh toán khi nhận hàng
+                <img src="https://d29fhpw069ctt2.cloudfront.net/icon/image/38239/preview.svg" style="width:35px" />
+            </label>
+        </div>
+        <button type="submit" class="btn btn-outline-warning">Thanh Toán</button>
+    </div>
+</form>
+@section  scripts{
+    <script>
+        let token = "";
+        let region = [];
+        let free = {
+            "pick_province": "TP Hồ Chí Minh",
+            "pick_district": "Quận 9",
+            "province": "TP Hồ Chí Minh",
+            "district": "Quận 1",
+            "address": "",
+            "pick_ward": "Phường Tăng Nhơn Phú A",
+            "pick_street": "",
+            "pick_address": "455 Lê Văn Việt, Phường Tăng Nhơn Phú A, Quận 9, TP Hồ Chí Minh",
+            "ward": "string",
+            "width": 200,
+            "value": 50000,
+            "transport": "road",
+            "deliver_option": "xfast",
+            "tags": [1]
+        }
+        let district = [];
+        $(document).ready(function () {
+            Login();
+            console.log(token)
+            Region();
+
+            $("#region").change(function (k, v) {
+
+                free.province = $("#region").val();
+                District(region.find(x => x.name === $("#region").val()).id)
+
+            })
+            $("#district").change(function (k, v) {
+
+                free.district = $("#district").val();
+                Ward(district.find(x => x.name === $("#district").val()).id)
+            })
+            $("#ward").change(function (k, v) {
+
+                free.ward = $("#ward").val();
+                Free();
+
+            })
+
+        });
+
+        const Free = async () => {
+            $.ajax({
+                async: false,
+                url: '/Sendo/Free',
+                type: 'POST',
+                dataType: 'json',
+                data: {data: free},
+            }).done(function (res) {
+
+                console.log(res.routes_list)
+                $("#free").text(" Tổng Tiền Ship  :" +numberWithCommas(res.routes_list.fee.fee)+ " VNĐ")
+                //var data = JSON.parse(res);
+                var a = Number($("#gross").val()) + res.routes_list.fee.fee
+                $("#payment").text("Tổng tiền khách hàng phải trả là : " + numberWithCommas(a) + " VNĐ")
+                $("#ship").val(res.routes_list.fee.fee);
+                console.log(a)
+            })
+        };
+        function numberWithCommas(x) {
+            x = x.toString();
+            var pattern = /(-?\d+)(\d{3})/;
+            while (pattern.test(x))
+                x = x.replace(pattern, "$1,$2");
+            return x;
+        }
+        const Login = async () => {
+            $.ajax({
+                async: false,
+                url: '/Sendo/Login',
+                type: 'GET',
+                dataType: 'json',
+            }).done(function (res) {
+
+                console.log(res.routes_list.result.token)
+                //var data = JSON.parse(res);
+                console.log(token);
+                token = res.routes_list.result.token,
+                    console.log(token)
+
+            })
+        };
+        const Region = async () => {
+            $.ajax({
+                async: false,
+                url: '/Sendo/region',
+                type: 'GET',
+                dataType: 'json',
+                data: { token: token },
+            }).done(function (res) {
+
+                $("#region").empty();
+
+                region = res.routes_list.result
+           
+                $.each(res.routes_list.result, function (k, v) {
+                    
+                    $("#region").append(`<option value="${v.name}">${v.name}</option>`)
+                });
+
+            });
+        }
+
+        const District = async (id) => {
+            $.ajax({
+                async: false,
+                url: '/Sendo/district',
+                type: 'GET',
+                dataType: 'json',
+                data: { id: id, token: token },
+            }).done(function (res) {
+                $("#district").empty();
+                console.log(res.routes_list)
+                district = res.routes_list.result;
+                $.each(res.routes_list.result, function (k, v) {
+                    $("#district").append(`<option value="${v.name}">${v.name}</option>`)
+                });
+                $("#ward").empty();
+            });
+        }
+        const Ward = async (id) => {
+            $.ajax({
+                async: false,
+                url: '/Sendo/ward',
+                type: 'GET',
+                dataType: 'json',
+                data: { id: id, token: token },
+            }).done(function (res) {
+
+                $("#ward").empty();
+                $.each(res.routes_list.result, function (k, v) {
+                    $("#ward").append(`<option value="${v.name}">${v.name}</option>`)
+                });
+
+            });
+        }
+
+    </script>
+}

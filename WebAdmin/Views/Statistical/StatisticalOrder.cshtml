@@ -1,0 +1,112 @@
+﻿@model IEnumerable<WebAdmin.Models.VoucherOrder>
+@{
+    ViewBag.Title = "Listorder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+               
+                <form action="/Statistical/StatisticalOrder" class="col-12" method="post">
+                    <div class="row d-flex justify-content-around ">
+                        <div class="col">
+                            <input type="date" name="NBD" class="form-control" />
+                        </div>
+                        <div class="col">
+                            <input type="date" name="NKT" class="form-control" />
+                        </div>
+                        <div class="col">
+                            <select name="status" class="form-control">
+                                <option value="">
+                                    Tất cả
+                                </option>
+                                <option value="1">
+                                    Chờ xác nhận
+                                </option>
+                                <option value="2">
+                                    Chờ lấy hàng
+                                </option>
+                                <option value="3">
+                                    Đang Giao
+                                </option>
+                                <option value="4">
+                                    Đánh giá
+                                </option>
+                                <option value="5">
+                                    Đã giao
+                                </option>
+                                <option value="6">
+                                    Đã hủy
+                                </option>
+                                <option value="7">
+                                    Trả hàng
+                                </option>
+                            </select>
+
+
+                        </div>
+                        <div class="col-lg-6">
+                            <button class="btn btn-primary btn-sm" id="btntimkiem">Tìm Kiếm </button>
+
+                        </div>
+                    </div>
+                </form>
+              
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Modal -->
+           
+
+            <div class="table-responsive ">
+                <table id="add-row" style="width:100%" class="display  table table-striped table-hover">
+                    <thead>
+
+                        <tr>
+                            <th>Tên khách hàng</th>
+                            <th>SĐT</th>
+                            <th>Ngày đăt</th>
+                            <th>Thanh Toán</th>
+                            <th>Trạng Thái</th>
+                            <td>Tổng tiền hàng</td>
+                            <td>Giảm giá </td>
+                            <td>Tiền khách trả</td>
+                            <th style="width: 5%">#</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        *@foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.telephone</td>
+                                <td>@item.createdate</td>
+                                <td>@(item.paymentmethods==0?"Nhận hàng mới thanh toán":"Thanh toán online")</td>
+                                <td>
+                                    @(item.status.Value==1||item.status==0?"Chờ xác nhận": item.status.Value == 2? "Chờ lấy hàng" : item.status.Value == 3 ? "Đang Giao" : item.status.Value == 4? "Đánh giá":
+    item.status.Value == 5 ? "Đã giao" : item.status.Value == 5 ? "Đã hủy" : "Trả hàng"
+    )
+                                </td>
+                                <td>@item.grossAmount.Value.ToString("N0") vnđ</td>
+                                <td>@item.discountAmount.Value.ToString("N0") vnđ</td>
+                                <td>@((item.grossAmount.Value- item.discountAmount).Value.ToString("N0")) vnđ</td>
+                                <td>
+                                    <div class="form-button-action">
+                                        <a href="/EditOrder/@item.id" name="Edit" data-toggle="tooltip" title="" class="btn btn-link btn-primary btn-lg" data-original-title="Edit Task">
+                                            <i class="fa fa-edit"></i>
+                                        </a>
+                                      
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
